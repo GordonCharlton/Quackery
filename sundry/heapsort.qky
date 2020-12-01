@@ -1,0 +1,70 @@
+
+  [ stack ]                     is pq           (       [ --> [       )
+
+  [ pq share swap peek ]        is pq.peek      (       n --> x       )
+
+  [ pq take swap poke pq put ]  is pq.poke      (     n x -->         )
+
+  [ 1+ 2 / 1 - ]                is parent       (       n --> n       )
+
+  [ 0 > ]                       is has-parent   (       n --> b       )
+
+  [ 2 * 1+ ]                    is child        (       n --> n       )
+
+  [ child pq share size < ]     is has-child    (       n --> b       )
+
+  [ 1+ ]                        is sibling      (       n --> n       )
+
+  [ sibling pq share size < ]   is has-sibling  (       n --> b       )
+
+  [ stack ]                     is comparison   (       [ --> [       )
+
+  [ comparison share do ]       is pq.compare   (     x x --> b       )
+
+  [ over size
+    rot 0 join pq put
+    [ dup has-parent while
+      dup parent
+      rot over pq.peek
+      2dup pq.compare iff
+        [ 2swap unrot pq.poke ]
+        again
+      rot 2drop swap ]
+    pq.poke pq take ]           is toheap       (     h x --> h       )
+
+  [ dup pq.peek swap
+    [ dup has-child while
+      dup child
+      dup has-sibling if
+        [ dup sibling pq.peek
+          over pq.peek
+          pq.compare if sibling ]
+      dip over dup pq.peek
+      rot dip dup pq.compare iff
+        [ rot pq.poke ]
+        again
+      2drop ]
+    pq.poke ]                   is pq.heapify   (       n -->         )
+
+  [ behead
+    over [] = if done
+    swap -1 split
+    swap join pq put
+    0 pq.heapify
+    pq take swap ]              is fromheap     (       h --> h v     )
+
+  [ dup pq put
+    size 2 / times
+      [ i pq.heapify ]
+    pq take ]                   is makeheap     (       [ --> h       )
+
+  [ ]'[ comparison put
+    [] swap makeheap
+    dup size times
+      [ fromheap
+        nested rot join
+        swap ]
+    drop
+    comparison release ]        is hsortwith    (       [ --> [       )
+
+  [ hsortwith > ]               is hsort        (       [ --> [       )

@@ -1,0 +1,190 @@
+
+  [ this ] is bigrat.qky   (   BIGnum RATional -- vulgar arithmetic   )
+
+  [ rot over put put ]          is 2put         (   n n [ -->         )
+
+  [ [ dup while
+      tuck mod again ]
+    drop ]                      is gcd          (     n n --> n       )
+
+  [ 2dup gcd tuck / dip / ]     is reduce       (     n/d --> n/d     )
+
+  [ 1
+    [ 2dup < not while
+      2 << again ]
+    0
+    [ over 1 > while
+      dip
+        [ 2 >>
+          2dup - ]
+      dup 1 >>
+      unrot -
+      dup 0 < iff drop
+      else
+        [ 2swap nip
+          rot over + ]
+      again ]
+    nip swap  ]                 is sqrt         (       n --> n n     )
+
+  [ rot 2dup *
+    dip
+      [ rot * dip * + ]
+    reduce ]                    is v+           ( n/d n/d --> n/d     )
+
+  [ dip negate ]                is -v           (     n/d --> n/d     )
+
+  [ -v v+ ]                     is v-           ( n/d n/d --> n/d     )
+
+  [ dip abs ]                   is vabs         (     n/d --> n/d     )
+
+  [ dup if
+      [ swap dup 0 <
+        if [ negate -v ] ] ]    is 1/v          (     n/d --> n/d     )
+
+  [ rot * dip * reduce ]        is v*           ( n/d n/d --> n/d     )
+
+  [ 1/v v* ]                    is v/           ( n/d n/d --> n/d     )
+
+  [ 1 ]                         is n->v         (       n --> n/d     )
+
+  [ tuck /mod rot reduce ]      is proper       (     n/d --> n n/d   )
+
+  [ rot n->v v+ ]               is improper     (   n n/d --> n/d     )
+
+  [ drop 0 = ]                  is v0=          (     n/d --> b       )
+
+  [ drop 0 < ]                  is v0<          (     n/d --> b       )
+
+  [ v- v0< ]                    is v<           ( n/d n/d --> b       )
+
+  [ nip 0 = ]                   is overflow     (     n/d --> b       )
+
+  [ over 0 = iff
+      [ drop true ] done
+    base share swap **
+    tuck *
+    dip *
+    tuck *
+    sqrt 0 = dip
+      [ swap reduce ] ]         is vsqrt        (   n/d n --> n/d b   )
+
+  [ stack 0 0 ]                 is v.cf         (         --> [       )
+
+  [ v.cf release
+    v.cf replace
+    v.cf put ]                  is v.initcf     (     n/d -->         )
+
+  [ v.cf take v.cf take
+    tuck dup if
+    [ /mod rot ]
+    v.cf 2put ]                 is v.nextcf     (         --> n       )
+
+  [ stack 0 1 ]                 is v.numers     (         --> [       )
+
+  [ v.numers take tuck *
+    v.numers take + dup
+    unrot v.numers 2put ]       is v.nextnumer  (       n --> n       )
+
+  [ v.numers release
+    v.numers take
+    0 1 v.numers 2put ]         is v.getnumer   (         --> n       )
+
+  [ stack 1 0 ]                 is v.denoms     (         --> [       )
+
+  [ v.denoms take tuck *
+    v.denoms take + dup
+    unrot v.denoms 2put ]       is v.nextdenom  (       n --> n       )
+
+  [ v.denoms release
+    v.denoms take
+    1 0 v.denoms 2put ]         is v.getdenom   (         --> n       )
+
+  [ temp put
+    2dup < iff
+      [ 1/v ' 1/v ]
+    else []
+    unrot
+    v.initcf
+    [ v.nextcf
+      dup 0 = dip
+        [ dup v.nextdenom
+          swap v.nextnumer
+          max temp share > ]
+      or until ]
+    v.getnumer v.getdenom
+    rot do
+    temp release ]              is round        (   n/d n --> n/d     )
+
+  [ dip
+      [ v- vabs proper rot ]
+    swap iff
+      [ drop 2drop false ]
+    else
+      [ base share swap **
+        n->v 1/v 2swap v< ] ]   is approx=    ( n/d n/d n --> b       )
+
+  [ char . over find split
+    dup $ '' != if
+      [ behead drop ]
+    dup size
+    base share swap **
+    unrot join $->n
+    dip [ swap reduce ] ]       is $->v         (       $ --> n/d b   )
+
+  [ 2dup overflow iff
+      [ 2drop
+        $ "overflow" ] done
+    reduce number$
+    dip
+      [ number$
+        char / join ] join ]    is vulgar$      (     n/d --> $       )
+
+  [ 2dup overflow iff
+      [ 2drop
+        $ "overflow" ] done
+    2dup v0< dip
+      [ vabs proper
+        rot number$ ]
+    if [ char - swap join ]
+    unrot 2dup v0= iff
+      [ 2drop ]
+    else
+      [ vulgar$ space
+        swap join
+        join ] ]                is proper$      (     n/d --> $       )
+
+  [ behead dup char . =
+    if [ char 0 swap join ]
+    swap join ]                 is +zero        (       $ --> $       )
+
+  [ dup size 1 - times
+      [ -1 split
+         dup $ '0' = iff drop
+         else
+           [ join
+             conclude ] ] ]     is -zeroes      (       $ --> $       )
+
+  [ -1 split dup $ "." =
+    iff drop else join ]        is -point       (       $ --> $       )
+
+  [ 2dup overflow iff
+      [ 2drop
+        $ "overflow" ] done
+    dup 0 = dip
+      [ unrot 2dup v0<
+        dip
+          [ vabs rot
+            dup dip
+              [ base share
+                dup dip
+                  [ swap 1+ **
+                    rot * swap / ]
+                tuck 2 / + swap /
+                number$ ]
+            negate split
+            char . swap join join
+            +zero -zeroes -point ] ]
+    rot swap
+    if [ 2 split nip ]
+    swap
+    if [ char - swap join ] ]   is point$       (   n/d n --> $       )

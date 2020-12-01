@@ -1,0 +1,44 @@
+Quackery consists of the files and folders in the folder named
+quackery in which you find this file.
+
+In addition to this text file, you should find two pdf files, namely;
+
+The Book of Quackery.pdf      the Quackery manual
+Quackery Quick Reference.pdf  a handy crib sheet
+
+and three text files;
+
+quackery.py      the Quackery language coded in Python 3
+extensionsX.qky  a file of Quackery code
+bigrat.qky       another file of Quackery code
+
+and a folder called sundry, containing four text files of Quackery
+code;
+
+cards.qky
+demo.qky
+fsm.qky
+heapsort.qky
+
+You will require a copy of Python3, version 3.5 or better, on your
+system. As a quick test navigate to the quackery folder in your
+Terminal app and enter either
+
+python quackery.py sundry/demo.qky
+
+or
+
+python3 quackery.py sundry/demo.qky
+
+One or both of these should a few screenfuls of output. If both
+produce an error message, you probably need to install or upgrade
+Python 3 on your system. More details about running Quackery can be
+found in The Book of Quackery.
+
+This work is licensed under the Creative Commons Attribution 4.0
+International License. To view a copy of this license, visit
+http://creativecommons.org/licenses/by/4.0/ or send a letter to
+Creative Commons, PO Box 1866, Mountain View, CA 94042, USA.
+
+Gordon Charlton, 2020.
+gordonrcharlton {at} gmail {dot} com

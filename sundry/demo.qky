@@ -1,0 +1,222 @@
+
+  [ say 'Building demo.qky...' cr ] now!
+
+  say 'Hello, World!' cr cr
+
+  space 5 of
+  $ 'hello world ' 5 of
+  25 times
+    [ over echo$
+      -1 split over echo$ cr
+      swap join ]
+  2drop cr
+
+  [ stack ]                     is rings        (         --> [       )
+
+  [ rings share
+    depth share -
+    8 * times sp
+    emit sp emit sp
+    say 'move' cr ]             is echomove     (     c c -->         )
+
+  [ dup rings put
+    depth put
+    char a char b char c
+    [ swap decurse
+      rot 2dup echomove
+      decurse
+      swap rot ]
+    3 times drop
+    depth release
+    rings release ]             is hanoi        (       n --> n       )
+
+  say 'How to solve a three ring Towers of Hanoi puzzle:' cr cr
+  3 hanoi cr
+
+  [ dup  2 < if done
+    dup  1 - recurse
+    swap 2 - recurse + ]        is fibonacci    (       n --> n       )
+
+  say 'The first 10 Fibonacci numbers are: '
+  10 times [ i^ fibonacci echo sp ] cr cr
+
+  [ 0 1 rot times
+      [ tuck + ] drop ]          is fibo        (       n --> n       )
+
+  say 'The 100th Fibonacci number is '
+  100 fibo echo say "." cr cr
+
+  [ dup 1 = iff
+        [ drop ' [ 0 1 ] ]
+        done
+      1 - recurse
+      dup  -1 peek
+      over -2 peek + join ]     is [fibo]       (       n --> [       )
+
+  say "A nest of the 0th to 10th Fibonacci numbers:" cr
+  10 [fibo] echo cr cr
+
+  [ [ stack 1 0 ]
+    dup take
+    dup dip
+      [ over take
+        over +
+        dip [ over put ]
+        swap put ] ]            is nextfibo     (         --> n       )
+
+  say "The first 5 Fibonacci numbers are:" cr
+  5 times [ nextfibo echo sp ] cr cr
+
+  3 times
+    [ say "The next 5 Fibonacci numbers are:" cr
+      5 times [ nextfibo echo sp ]
+      cr cr ]
+
+  [ stack ]                     is bottles      (         --> [       )
+
+  [ join carriage join ]        is addline      (     $ $ --> $       )
+
+  [ dup 0 = iff $ 'No more'
+    else [ dup number$ ]
+    $ ' bottle' join
+    swap 1 != if [ char s join ]
+    $ ' of beer ' join ]        is beers        (       n --> $       )
+
+  $ 'on the wall'               is wall         (         --> $       )
+
+  $ 'Take one down, pass it around'
+                                is drink        (         --> $       )
+
+  $ 'Go to the store, buy some more'
+                                is restock      (         --> $       )
+
+  [ dup beers wall addline
+    over beers addline
+    over 0 = iff
+      [ nip bottles share
+        swap restock ]
+    else drink addline
+    swap 1 -
+    beers wall join addline ]   is verse        (       n --> $       )
+
+  [ 1+ $ '' swap
+    dup bottles put
+    times [ i verse addline ]
+    bottles release ]           is song         (       n --> $       )
+
+  say 'The song "9 Bottles of Beer on the Wall":' cr cr
+  9 song echo$
+
+  [ times
+      [ i^ 1+
+        ' echo
+        over 3 mod 0 = if
+          [ say "fizz"
+            drop ' drop ]
+        over 5 mod 0 = if
+          [ say "buzz"
+            drop ' drop ]
+        do
+        sp ]
+    cr ]                         is fizzbuzz   (        n -->         )
+
+  say 'First 15 turns in the game of fizzbuzz:' cr cr
+  15 fizzbuzz cr
+
+  [ this copy echo ]             is quine      (          -->         )
+
+  quine say ' is quine' cr cr
+
+  [ this copy unbuild ]          is quine$     (          -->         )
+
+  quine$ echo$ say ' is quine$' cr cr
+
+  [ stack ]                     is perms.min    (         --> [       )
+
+  [ stack ]                     is perms.max    (         --> [       )
+
+                        forward is (perms)
+
+  [ over size
+    perms.min share > if
+      [ over temp take
+        swap nested join
+        temp put ]
+    over size
+    perms.max share < if
+      [ dup size times
+         [ 2dup i^ pluck
+           rot swap nested join
+           swap (perms) ] ]
+    2drop ]               resolves (perms)      (     [ [ -->         )
+
+  [ perms.max put
+    1 - perms.min put
+    [] temp put
+    [] swap (perms)
+    temp take
+    perms.min release
+    perms.max release ]         is perms        (   [ n n --> [       )
+
+  $ 'this is quackery' nest$
+  3 3 perms
+  witheach
+    [ 10 times sp
+      witheach
+        [ echo$ sp ] cr ] cr
+
+  [ over size over size =
+    dup iff
+      [ unrot witheach
+          [ over find
+            2dup swap found iff
+              [ pluck drop ]
+            else
+              [ drop dip not
+                conclude ] ]
+        drop ]
+    else
+      [ nip nip ] ]             is isperm       (     [ [ --> b       )
+
+    say '"burlypathogenic" is '
+    $ 'uncopyrightable'
+    $ 'burlypathogenic' isperm not if [ say 'not ' ]
+    say 'a permutation of "uncopyrightable".' cr cr
+
+  [ 1 swap times [ i 1+ * ] ]   is !            (       n --> n       )
+
+  [ [] unrot 1 - times
+      [ i 1+ ! /mod
+        dip join ] drop ]       is factoradic   (     n n --> [       )
+
+  [ [] unrot witheach
+      [ pluck
+        rot swap nested join
+        swap ]
+    join ]                       is inversion   (     [ [ --> [       )
+
+  [ over size
+    factoradic inversion ]       is nperm       (     [ n -->         )
+
+  say 'The 1236880662123rd permutation of' cr
+  say '"uncopyrightable" is "'
+  $ 'uncopyrightable' 1236880662123 nperm echo$
+  say '".' cr cr
+
+  [ 0 unrot swap witheach
+      [ over find
+        dup dip [ pluck drop ]
+        rot i 1+ * + swap ]
+    drop ]                      is permnum      (     [ [ --> n       )
+
+  say '"lucentbiography" is permutation' cr
+  say '#' $ 'lucentbiography' $ 'uncopyrightable' permnum echo
+  say ' of "uncopyrightable".'
+  cr cr
+
+  say 'The answer is '
+  -80538738812075974 3 **
+   80435758145817515 3 ** +
+   12602123297335631 3 ** + echo say '.' cr
+
+  [ say 'Finished.' cr cr ]  now!
