@@ -1,10 +1,13 @@
 Quackery consists of the files and folders in the folder named
 quackery in which you find this file.
 
-In addition to this text file, you should find two pdf files, namely;
+In addition to this text file, you should find three pdf files, namely;
 
-The Book of Quackery.pdf      the Quackery manual
-Quackery Quick Reference.pdf  a handy crib sheet
+The Book of Quackery.pdf             the Quackery manual
+The Book of Quackery for print.pdf   as above, but prints better
+                                     specifically recommended for use 
+                                     at http://print-my-pdf.com
+Quackery Quick Reference.pdf         a handy crib sheet
 
 and three text files;
 
