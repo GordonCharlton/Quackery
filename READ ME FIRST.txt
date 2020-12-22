@@ -29,6 +29,7 @@ Terminal app and enter either
 
 python quackery.py sundry/demo.qky
 
+
 or
 
 python3 quackery.py sundry/demo.qky
