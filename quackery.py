@@ -1293,7 +1293,7 @@ def quackery(source_string):
     over $ '' = if
       [ $ '"char" needs a character after it.'
         message put bail ]
-    dip join ]                 is b.char        (     [ $ --> [ $     )
+    dip join ]                  is b.char       (     [ $ --> [ $     )
 
   [ dup $ '' = if
       [ $ '"$" needs to be followed by a string.'
