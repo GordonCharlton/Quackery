@@ -5,7 +5,7 @@
 
   [ [ dup while
       tuck mod again ]
-    drop ]                      is gcd          (     n n --> n       )
+    drop abs ]                  is gcd          (     n n --> n       )
 
   [ 2dup gcd tuck / dip / ]     is reduce       (     n/d --> n/d     )
 
