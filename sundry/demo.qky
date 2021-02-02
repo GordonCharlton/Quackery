@@ -183,52 +183,40 @@
     $ 'burlypathogenic' isperm not if [ say 'not ' ]
     say 'a permutation of "uncopyrightable".' cr cr
 
-  [ 1 swap times [ i 1+ * ] ]   is !            (   n --> n )
-
-  [ dup 0 = iff [ drop 2 ] done
-    0
-    [ 1+ 2dup ! / 0 = until ] 
-    nip ]                       is figits       (   n --> n )
+  [ 1 swap times [ i 1+ * ] ]   is !            (       n --> n       )
 
   [ [] unrot 1 - times
       [ i 1+ ! /mod
-        dip join ] drop ]       is factoradic   ( n n --> [ )
-
-  [ 0 swap 
-    witheach [ i 1+ ! * + ] ]   is unfactoradic (   [ --> n )
+        dip join ] drop ]       is factoradic   (     n n --> [       )
 
   [ [] unrot witheach
       [ pluck
         rot swap nested join
         swap ]
-    join ]                       is inversion   ( [ [ --> [ )
+    join ]                       is inversion   (     [ [ --> [       )
 
   [ over size
-    factoradic inversion ]       is nperm       ( [ n --> [ )
-
-  [ 0 unrot swap witheach
-      [ over find
-        dup dip [ pluck drop ]
-        rot i 1+ * + swap ]
-    drop ]                      is permnum      ( [ [ --> n )
+    factoradic inversion ]       is nperm       (     [ n -->         )
 
   say 'The 1236880662123rd permutation of' cr
   say '"uncopyrightable" is "'
   $ 'uncopyrightable' 1236880662123 nperm echo$
   say '".' cr cr
 
-  say 'The factorial base representation of' cr
-  say  '1236880662123 is '
-  1236880662123 dup figits factoradic echo 
-  say '.' cr cr 
+  [ 0 unrot swap witheach
+      [ over find
+        dup dip [ pluck drop ]
+        rot i 1+ * + swap ]
+    drop ]                      is permnum      (     [ [ --> n       )
 
   say '"lucentbiography" is permutation' cr
   say '#' $ 'lucentbiography' $ 'uncopyrightable' permnum echo
-  say ' of "uncopyrightable".' cr cr
+  say ' of "uncopyrightable".'
+  cr cr
 
-  say 'The factorial base number [ 13 0 1 11 0 7 8 4 0 3 2 3 0 1 ]' cr
-  say  'is '
-  ' [ 13 0 1 11 0 7 8 4 0 3 2 3 0 1 ] unfactoradic echo 
-  say ' as a decimal.' cr
+  say 'The answer is '
+  -80538738812075974 3 **
+   80435758145817515 3 ** +
+   12602123297335631 3 ** + echo say '.' cr
 
   [ say 'Finished.' cr cr ]  now!

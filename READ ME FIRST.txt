@@ -29,7 +29,6 @@ Terminal app and enter either
 
 python quackery.py sundry/demo.qky
 
-
 or
 
 python3 quackery.py sundry/demo.qky
@@ -46,3 +45,4 @@ Creative Commons, PO Box 1866, Mountain View, CA 94042, USA.
 
 Gordon Charlton, 2020.
 gordonrcharlton {at} gmail {dot} com
+ß

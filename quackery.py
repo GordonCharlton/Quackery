@@ -15,8 +15,7 @@ class QuackeryError(Exception):
 
 def quackery(source_string):
 
-    """  Perform a Quackery program.
-         Return the stack as a string.  """
+    """   Perform a Quackery program. Return the stack as a string.  """
 
     def failed(message):
         traverse(build("""  stacksize pack
@@ -285,15 +284,10 @@ def quackery(source_string):
     def meta_do():
         expect_something()
         the_thing = from_stack()
-        if isOperator(the_thing):
-            the_thing()
-        elif isNumber(the_thing):
-            to_stack(the_thing)
-        elif isNest(the_thing):
-            to_return(the_thing)
-            to_return(-1)
-        else:
-            failed('Quackery was worried by a python on the stack.')
+        if not isNest(the_thing):
+            the_thing = [the_thing]
+        to_return(the_thing)
+        to_return(-1)
 
     def meta_bail_by():
         expect_number()
@@ -1208,20 +1202,24 @@ def quackery(source_string):
   [ b.nesting take dup
     $ '' = if
       [ $ 'Unexpected "]".'
-        message put bail ]
+        message put
+        bail ]
     dup $ '[' = iff drop
     else
       [ $ 'Nest mismatch: '
         swap join $ ' ]' join
-        message put bail ]
+        message put
+        bail ]
     dip [ nested join ] ]       is b.]          (   [ [ $ --> [ $     )
 
   [ over [] = if
       [ $ '"is" needs something to name.'
-        message put bail ]
+        message put
+        bail ]
     dup $ '' = if
       [ $ '"is" needs a name after it.'
-        message put bail ]
+        message put
+        bail ]
     nextword nested
     namenest take
     join
@@ -1234,10 +1232,12 @@ def quackery(source_string):
 
   [ over [] = if
       [ $ '"builds" needs something to name.'
-        message put bail ]
+        message put
+        bail ]
     dup $ '' = if
       [ $ '"builds" needs a name after it.'
-        message put bail ]
+        message put
+        bail ]
     nextword nested
     buildernest take
     join
@@ -1251,11 +1251,13 @@ def quackery(source_string):
   [ trim nextword
     dup $ '' = if
       [ $ 'Unfinished comment.'
-        message put bail ]
+        message put
+        bail ]
     $ ')' = until ]             is b.(          (     [ $ --> $ [     )
 
   [ $ 'Unexpected ")".'
-    message put bail ]          is b.)          (     [ $ --> $ [     )
+    message put
+    bail ]                      is b.)          (     [ $ --> $ [     )
 
   [ $ 'Unresolved reference.'
     fail  ]                     is unresolved   (         -->         )
@@ -1266,23 +1268,27 @@ def quackery(source_string):
 
    [ over [] = if
       [ $ '"resolves" needs something to resolve with.'
-        message put bail ]
+        message put
+        bail ]
     dup $ '' = if
       [ $ '"resolves" needs a name to resolve.'
-        message put bail ]
+        message put
+        bail ]
      dip [ -1 split ]
      nextword dup temp put
      names find
      dup names found not if
        [ $ 'Unknown word after "resolves": '
          temp take join
-         message put bail ]
+         message put
+         bail ]
      actions
      dup ' [ unresolved ] = not if
        [ char " temp take join
          $ '" is not an unresolved forward reference.'
          join
-         message put bail ]
+         message put
+         bail ]
      rot 0 peek over
      replace
      ' unresolved swap
@@ -1292,16 +1298,19 @@ def quackery(source_string):
   [ 1 split
     over $ '' = if
       [ $ '"char" needs a character after it.'
-        message put bail ]
+        message put
+        bail ]
     dip join ]                  is b.char       (     [ $ --> [ $     )
 
   [ dup $ '' = if
       [ $ '"$" needs to be followed by a string.'
-        message put bail ]
+        message put
+        bail ]
     behead over find
     2dup swap found not if
       [ $ 'Endless string discovered.'
-        message put bail ]
+        message put
+        bail ]
     split behead drop
     ' ' nested
     rot nested join
@@ -1309,7 +1318,8 @@ def quackery(source_string):
 
   [ dup $ '' = if
       [ $ '"say" needs to be followed by a string.'
-        message put bail ]
+        message put
+        bail ]
     $ '$' builders find jobs do
     dip
       [ -1 pluck
@@ -1320,21 +1330,24 @@ def quackery(source_string):
     nextword dup
     $ '' = if
       [ $ '"hex" needs a number after it.'
-        message put bail ]
+        message put
+        bail ]
     dup $->n iff
       [ nip swap dip join ]
     else
       [ drop
         char " swap join
         $ '" is not hexadecimal.'
-        join message put bail ]
+        join message put
+        bail ]
     base release ]              is b.hex        (     [ $ --> [ $     )
 
   [ dip [ -1 split ] swap do ]  is b.now!       (     [ $ --> [ $     )
 
   [ over [] = if
       [ $ '"constant" needs something before it.'
-        message put bail ]
+        message put
+        bail ]
     dip
       [ -1 pluck do
       dup number? not if
@@ -1381,13 +1394,15 @@ def quackery(source_string):
             [ nip swap dip join ] again
           drop
           $ 'Unknown word: '
-          swap join message put bail ]
+          swap join message put
+          bail ]
         base release
         b.nesting take dup
         $ '' = iff drop
         else
           [ $ 'Unfinished nest: '
-            swap join message put bail ] ]
+            swap join message put
+            bail ] ]
     bailed iff
       [ drop b.to-do now-do
         restorewords
@@ -1636,6 +1651,7 @@ if __name__ == '__main__':
         print()
         print('Enter "leave" to leave the shell.')
         quackscript = r"""
+
           $ 'extensions.qky' dup name? not
           dip sharefile and iff
             [ cr say 'Building extensions.' cr quackery ]
