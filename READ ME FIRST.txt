@@ -9,13 +9,14 @@ The Book of Quackery for print.pdf   as above, but prints better
                                      at http://print-my-pdf.com
 Quackery Quick Reference.pdf         a handy crib sheet
 
-and three text files;
+and four text files;
 
 quackery.py      the Quackery language coded in Python 3
 extensionsX.qky  a file of Quackery code
 bigrat.qky       another file of Quackery code
+turtleduck.qky   and another file of Quackery code
 
-and a folder called sundry, containing four text files of Quackery
+and a folder called sundry, containing four more files of Quackery
 code;
 
 cards.qky
@@ -43,6 +44,5 @@ International License. To view a copy of this license, visit
 http://creativecommons.org/licenses/by/4.0/ or send a letter to
 Creative Commons, PO Box 1866, Mountain View, CA 94042, USA.
 
-Gordon Charlton, 2020.
+Gordon Charlton, 2021.
 gordonrcharlton {at} gmail {dot} com
-ß

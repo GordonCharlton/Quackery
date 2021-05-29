@@ -1,0 +1,113 @@
+
+  [ $ "bigrat.qky" loadfile ] now!
+  [ this ] is turtleduck.qky
+
+  [ 1 11 clamp
+    dup 11 = if [ drop 0 ]
+    $ \
+import turtle
+turtle.speed(from_stack())
+  \ python ]                       is speed   (       n --> )
+
+  [ $ \
+import turtle
+a = from_stack()
+b = from_stack()
+turtle.pendown()
+turtle.forward(b/a)
+  \ python ]                       is walk    (     n/d --> )
+
+  [ $ \
+import turtle
+a = from_stack()
+b = from_stack()
+turtle.penup()
+turtle.forward(b/a)
+  \ python ]                       is fly     (     n/d --> )
+
+  [ $ \
+import turtle
+a = from_stack()
+b = from_stack()
+turtle.right(360*b/a)
+  \ python ]                       is turn    (     n/d --> )
+
+  [ $ \
+import turtle
+a = from_stack()
+b = from_stack()
+c = from_stack()
+d = from_stack()
+turtle.pendown()
+turtle.circle(d/c, 360*b/a)
+  \ python ]                       is arc     ( n/d n/d --> )
+
+  [ $ \
+import turtle
+a = from_stack()
+b = from_stack()
+c = from_stack()
+d = from_stack()
+turtle.penup()
+turtle.circle(d/c, 360*b/a)
+  \ python ]                       is flarc   ( n/d n/d --> )
+
+[ 2dup fly
+  -1 4 turn
+  2dup 1 1 arc 
+  1 4 turn 
+  dip negate fly ]                 is circle  (     n/d --> )
+
+  [ $ \
+import turtle
+turtle.width(from_stack())
+  \ python ]                       is wide    (       n --> )
+
+  [ $ \
+import turtle
+a = from_stack()
+turtle.color(a[0], a[1], a[2])
+  \ python ]                       is colour  (   r g b --> )
+
+  [  $ \
+import turtle
+a = from_stack()
+turtle.fillcolor(a[0] ,a[1], a[2])
+turtle.begin_fill()
+  \ python 
+  ]'[ do
+  $ \
+import turtle
+turtle.end_fill()
+  \ python ]                       is fill    (   r g b --> )
+
+  [ $ \
+import turtle
+turtle.showturtle()
+  \ python ]                       is show    (         --> )
+
+  [ $ \
+import turtle
+turtle.hideturtle()
+  \ python ]                       is hide    (         --> )
+
+  [ $ \
+import turtle
+turtle.clearscreen()
+turtle.colormode(255)
+  \ python ]                       is clear   (         --> )
+
+  [ $ \
+import turtle
+turtle.title("Turtle Duck")
+  \ python
+    clear 
+    hide 
+    11 speed ]                      is turtle  (         --> )
+
+  [ turtle
+    16 times 
+      [ 60 times 
+        [ 310 1 walk
+          23 60 turn ]
+      1 16 turn ] ]                is demo    (         --> )

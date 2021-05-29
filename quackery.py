@@ -88,6 +88,18 @@ def quackery(source_string):
                 result.append(ord('?'))
         to_stack(result)
 
+    def python():
+        nonlocal to_stack
+        nonlocal from_stack
+        nonlocal string_to_stack
+        nonlocal string_from_stack
+        try:
+            exec(string_from_stack())
+        except QuackeryError:
+            raise
+        except Exception as diagnostics:
+            failed('Python reported: "' + str(diagnostics) + '"')
+
     def qfail():
         message = string_from_stack()
         failed(message)
@@ -462,6 +474,7 @@ def quackery(source_string):
             to_stack(true)
 
     operators = {
+           'python':      python,       # (     $ -->       )
            'fail':        qfail,        # (     $ -->       )
            'nand':        nand,         # (   b b --> b     )
            '=':           equal,        # (   x x --> b     )
@@ -553,7 +566,7 @@ def quackery(source_string):
                 to_stack(current_item)
                 program_counter += 1
             else:
-                failed('Quackery was worried by a python in the nest.')
+                failed('Quackery was worried by a python.')
 
     def isinteger(string):
         numstr = string
@@ -882,7 +895,7 @@ def quackery(source_string):
     ]done[ ]                    is table        (       n --> x       )
 
   [ [] unrot
-    dup 0 = iff 2drop done
+    dup 1 < iff 2drop done
     [ 2 /mod over while
       if [ dip [ tuck join swap ] ]
       dip [ dup join ]
@@ -1446,7 +1459,11 @@ def quackery(source_string):
           1 nesting tally
           space join
           swap dip join again ]
-      $ ']' join ] ]      resolves unbuild      (       x --> $       )
+      $ ']' join ] 
+    else 
+       [ drop 
+         $ "Quackery was worried by a python."
+         fail ] ]         resolves unbuild      (       x --> $       )
 
   [ unbuild echo$ ]             is echo         (       x -->         )
 
@@ -1560,7 +1577,7 @@ def quackery(source_string):
      quid operator? number? nest? size poke peek find join split []
      take immovable put ]bailby[ ]do[ ]this[ ]'[ ]else[ ]iff[ ]if[
      ]again[ ]done[ over rot swap drop dup return nestdepth stacksize
-     time ~ ^ | & >> << ** /mod * negate + 1+ > = nand fail"
+     time ~ ^ | & >> << ** /mod * negate + 1+ > = nand fail python"
   nest$ namenest put
 
   [ table
@@ -1585,7 +1602,7 @@ def quackery(source_string):
     quid operator? number? nest? size poke peek find join split []
     take immovable put ]bailby[ ]do[ ]this[ ]'[ ]else[ ]iff[ ]if[
     ]again[ ]done[ over rot swap drop dup return nestdepth stacksize
-    time ~ ^ | & >> << ** /mod * negate + 1+ > = nand fail ]
+    time ~ ^ | & >> << ** /mod * negate + 1+ > = nand fail python ]
 
                           resolves actions      (       n --> x       )
 
