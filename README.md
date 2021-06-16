@@ -4,10 +4,10 @@ educational programming, inspired by Forth and Lisp.
 
 Sample Quackery Shell dialogue; defining and testing an insertion sort.
 
-<pre>/O>   [ [] swap witheach
-...       [ swap 2dup 
-...         findwith [ over > ] [ ] 
-...         nip stuff ] ]           is i-sort ( [ --> [ )
+<pre>/O> [ [] swap witheach
+...     [ swap 2dup 
+...       findwith [ over > ] [ ] 
+...       nip stuff ] ]           is sort ( [ --> [ )
 ... 
 
 Stack empty.
