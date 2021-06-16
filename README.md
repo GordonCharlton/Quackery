@@ -7,7 +7,7 @@ Sample Quackery Shell dialogue; defining and testing an insertion sort.
 <pre>/O> [ [] swap witheach
 ...     [ swap 2dup 
 ...       findwith [ over > ] [ ] 
-...       nip stuff ] ]           is sort ( [ --> [ )
+...       nip stuff ] ]           is i-sort ( [ --> [ )
 ... 
 
 Stack empty.
