@@ -2,7 +2,7 @@
 Quackery is lightweight, open-source language for recreational and 
 educational programming, inspired by Forth and Lisp.
 
-Sample Quackery shell dialogue; defining and testing an insertion sort.
+Sample Quackery Shell dialogue; defining and testing an insertion sort.
 
 <pre>/O>   [ [] swap witheach
 ...       [ swap 2dup 
@@ -30,7 +30,7 @@ features.
 
 Program execution consists of the Quackery Processor traversing
 directed tree-like graphs built from dynamic arrays ("Nests" in the
-Quackery nomenclature" containing Operators (op-codes), Numbers
+Quackery nomenclature) containing Operators (op-codes), Numbers
 (pointers to bignums) and pointers to Nests. The Quackery processor is
 stack-based rather than register-based.
 
