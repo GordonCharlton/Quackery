@@ -14,12 +14,6 @@ class QuackeryError(Exception):
     pass
 
 
-def describe(obj):
-    if type(obj) is not list:
-        return str(obj)
-    return '[ ' + ' '.join('[...]' if type(i) is list else str(i) for i in obj) + ' ]'
-
-
 def quackery(source_string):
 
     """   Perform a Quackery program. Return the stack as a string.  """
