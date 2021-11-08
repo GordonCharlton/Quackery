@@ -21,6 +21,7 @@ def quackery(source_string):
     def failed(message):
         traverse(build("""  stacksize pack
                             decimal unbuild
+                            [ stack [ 46 47 ] ] is file.path
                             return$
                             nestdepth ]bailby[  """))
         returnstack = string_from_stack()
@@ -90,17 +91,17 @@ def quackery(source_string):
         to_stack(result)
 
     def share_path():
-        nonlocal current_nest
-        nonlocal program_counter
-        nonlocal rstack
-        backup_current_nest = current_nest
-        backup_program_counter = program_counter
-        backup_rstack = rstack
-        rstack = []
-        traverse(build('file.path share'))
-        current_nest = backup_current_nest
-        program_counter = backup_program_counter
-        rstack = backup_rstack
+        to_stack(operators['file.path'])
+        expect_nest()
+        a = from_stack()
+        if len(a) == 0:
+            failed('Unexpectedly empty nest.')
+        if len(a) == 1:
+            if isNest(a[0]):
+                if len(a[0]) > 0:
+                    if a[0][0] == immovable:
+                        failed('Cannot remove an immovable item.')
+        to_stack(a[-1])
         return string_from_stack()
 
     def python():
@@ -487,6 +488,8 @@ def quackery(source_string):
             filetext = f.read()
             f.close()
         except FileNotFoundError:
+            drop()
+            string_to_stack(filepath)
             to_stack(false)
         except:
             raise
