@@ -1,5 +1,5 @@
 # Quackery
-Quackery is lightweight, open-source language for recreational and 
+Quackery is a lightweight, open-source language for recreational and 
 educational programming, inspired by Forth and Lisp.
 
 Sample Quackery Shell dialogue; defining and testing an insertion sort.
