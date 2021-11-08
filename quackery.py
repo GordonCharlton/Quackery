@@ -1565,7 +1565,7 @@ def quackery(source_string):
     70 wrap$ cr ]                is words        (         -->         )
 
   [ stack [ 46 47 ] ]            is file.path    (         --> [       )
-  ( file.path protect )
+  file.path protect
 
   [ dup name? iff drop
     else
