@@ -976,6 +976,7 @@ def quackery(source_string):
 
   [ mi.tidyup put
     over size mi.result put
+    nested
     ' [ if
         [ i^ mi.result replace
           conclude ] ]
