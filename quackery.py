@@ -448,7 +448,7 @@ def quackery(source_string):
         filepath = os.path.join(path, filename)
         filetext = string_from_stack()
         try:
-            f = open(filepath, 'x')
+            f = open(filename, 'x')
             f.close()
         except FileExistsError:
             to_stack(false)
@@ -478,7 +478,6 @@ def quackery(source_string):
             to_stack(true)
 
     def sharefile():
-        nonlocal rstack
         dup()
         path = share_path()
         filename = string_from_stack()
