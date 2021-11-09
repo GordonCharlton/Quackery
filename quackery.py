@@ -448,7 +448,7 @@ def quackery(source_string):
         filepath = os.path.join(path, filename)
         filetext = string_from_stack()
         try:
-            f = open(filename, 'x')
+            f = open(filepath, 'x')
             f.close()
         except FileExistsError:
             to_stack(false)
