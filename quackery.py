@@ -3,7 +3,6 @@
 import time
 import sys
 import os
-import os.path
 try:
     import readline
 except:
@@ -88,20 +87,6 @@ def quackery(source_string):
             else:
                 result.append(ord('?'))
         to_stack(result)
-
-    def share_path():
-        nonlocal current_nest
-        nonlocal program_counter
-        nonlocal rstack
-        backup_current_nest = current_nest
-        backup_program_counter = program_counter
-        backup_rstack = rstack
-        rstack = []
-        traverse(build('file.path share'))
-        current_nest = backup_current_nest
-        program_counter = backup_program_counter
-        rstack = backup_rstack
-        return string_from_stack()
 
     def python():
         nonlocal to_stack
@@ -442,12 +427,10 @@ def quackery(source_string):
         string_to_stack(input(prompt))
 
     def putfile():
-        path = share_path()
         filename = string_from_stack()
-        filepath = os.path.join(path, filename)
         filetext = string_from_stack()
         try:
-            f = open(filepath, 'x')
+            f = open(filename, 'x')
             f.close()
         except FileExistsError:
             to_stack(false)
@@ -455,7 +438,7 @@ def quackery(source_string):
             raise
         else:
             try:
-                f = open(filepath, 'w')
+                f = open(filename, 'w')
                 f.write(filetext)
                 f.close()
             except:
@@ -464,11 +447,9 @@ def quackery(source_string):
                 to_stack(true)
 
     def releasefile():
-        path = share_path()
         filename = string_from_stack()
-        filepath = os.path.join(path, filename)
         try:
-            os.remove(filepath)
+            os.remove(filename)
         except FileNotFoundError:
             to_stack(false)
         except:
@@ -477,13 +458,10 @@ def quackery(source_string):
             to_stack(true)
 
     def sharefile():
-        nonlocal rstack
         dup()
-        path = share_path()
         filename = string_from_stack()
-        filepath = os.path.join(path, filename)
         try:
-            f = open(filepath)
+            f = open(filename)
             filetext = f.read()
             f.close()
         except FileNotFoundError:
@@ -998,7 +976,6 @@ def quackery(source_string):
 
   [ mi.tidyup put
     over size mi.result put
-    nested
     ' [ if
         [ i^ mi.result replace
           conclude ] ]
@@ -1558,9 +1535,6 @@ def quackery(source_string):
     builders reverse
     70 wrap$ cr ]                is words        (         -->         )
 
-  [ stack [ 46 47 ] ]            is file.path    (         --> [       )
-  file.path protect
-
   [ dup name? iff drop
     else
       [ dup sharefile not if
@@ -1603,8 +1577,7 @@ def quackery(source_string):
      quid operator? number? nest? size poke peek find join split []
      take immovable put ]bailby[ ]do[ ]this[ ]'[ ]else[ ]iff[ ]if[
      ]again[ ]done[ over rot swap drop dup return nestdepth stacksize
-     time ~ ^ | & >> << ** /mod * negate + 1+ > = nand fail python
-     file.path"
+     time ~ ^ | & >> << ** /mod * negate + 1+ > = nand fail python"
   nest$ namenest put
 
   [ table
@@ -1629,8 +1602,7 @@ def quackery(source_string):
     quid operator? number? nest? size poke peek find join split []
     take immovable put ]bailby[ ]do[ ]this[ ]'[ ]else[ ]iff[ ]if[
     ]again[ ]done[ over rot swap drop dup return nestdepth stacksize
-    time ~ ^ | & >> << ** /mod * negate + 1+ > = nand fail python
-    file.path ]
+    time ~ ^ | & >> << ** /mod * negate + 1+ > = nand fail python ]
 
                           resolves actions      (       n --> x       )
 
