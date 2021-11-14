@@ -1136,8 +1136,14 @@ def quackery(source_string):
   [ stack ]                     is history      (         --> s       )
 
   [ protected share history put
-    [] protected share
-    witheach [ size over put ]
+    protected share 0
+    [ over size over
+      > while
+      2dup peek
+      size unrot
+      1+ again ]
+    2drop
+    protected share size pack
     history put
     pack dup history put unpack
     stacksize history put
@@ -1156,12 +1162,18 @@ def quackery(source_string):
         history share
         size - - times drop
         history take unpack
-        history take
-        history share witheach
-        [ dip [ dup i^ peek ]
-          dup size rot -
-          times [ dup release ]
-          drop ]
+        history take unpack
+        history share size
+        [ dup 0 > while
+          1 -
+          history share
+          over peek
+          rot over size
+          swap -
+          [ dup 0 > while
+            over release
+            1 - again ]
+          2drop again ]
         drop
         history take
         protected release
