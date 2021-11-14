@@ -832,6 +832,7 @@ def quackery(source_string):
   [ protected take
     ]'[ nested join
     protected put ]             is protect      (         -->         )
+                           protect protected
 
   [ stack ]                     is dip.hold     (         --> s       )
   protect dip.hold
@@ -1134,11 +1135,10 @@ def quackery(source_string):
 
   [ stack ]                     is history      (         --> s       )
 
-  [ protected share
-    [ dup [] != while
-      -1 split 0 peek
-      size history put again ]
-    drop
+  [ protected share history put
+    [] protected share
+    witheach [ size over put ]
+    history put
     pack dup history put unpack
     stacksize history put
     nestdepth history put
@@ -1156,21 +1156,20 @@ def quackery(source_string):
         history share
         size - - times drop
         history take unpack
-        protected share
-        reverse
-        [ dup [] != while
-          -1 split 0 peek
-          dup size
-          history take -
-          [ dup 0 > while
-            over release
-            1 - again ]
-          2drop again ]
-        drop true ]
+        history take
+        history share witheach
+        [ dip [ dup i^ peek ]
+          dup size rot -
+          times [ dup release ]
+          drop ]
+        drop
+        history take
+        protected release
+        protected put
+        true ]
       else
-        [ protected share
-          size 3 + times
-            [ history release ]
+        [ 5 times
+          [ history release ]
           false ] ]             is bailed       (         --> b       )
 
   [ quid swap quid = ]          is oats         (     x x --> b       )
