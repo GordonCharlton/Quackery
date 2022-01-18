@@ -5,8 +5,6 @@ In addition to this text file, you should find three pdf files, namely;
 
 The Book of Quackery.pdf             the Quackery manual
 The Book of Quackery for print.pdf   as above, but prints better
-                                     specifically recommended for use 
-                                     at http://print-my-pdf.com
 Quackery Quick Reference.pdf         a handy crib sheet
 
 and four text files;

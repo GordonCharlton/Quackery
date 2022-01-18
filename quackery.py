@@ -426,8 +426,14 @@ def quackery(source_string):
         prompt = string_from_stack()
         string_to_stack(input(prompt))
 
+    filepath = []
+
     def putfile():
+        nonlocal filepath
         filename = string_from_stack()
+        if len(filepath) > 1:
+            to_stack(filepath[-1])
+            filename = string_from_stack() + filename
         filetext = string_from_stack()
         try:
             f = open(filename, 'x')
@@ -447,7 +453,11 @@ def quackery(source_string):
                 to_stack(true)
 
     def releasefile():
+        nonlocal filepath
         filename = string_from_stack()
+        if len(filepath) > 1:
+            to_stack(filepath[-1])
+            filename = string_from_stack() + filename
         try:
             os.remove(filename)
         except FileNotFoundError:
@@ -458,8 +468,12 @@ def quackery(source_string):
             to_stack(true)
 
     def sharefile():
+        nonlocal filepath
         dup()
         filename = string_from_stack()
+        if len(filepath) > 1:
+            to_stack(filepath[-1])
+            filename = string_from_stack() + filename
         try:
             f = open(filename)
             filetext = f.read()
@@ -526,6 +540,7 @@ def quackery(source_string):
            'emit':        qemit,        # (     c -->       )
            'ding':        ding,         # (       -->       )
            'input':       qinput,       # (     $ --> $     )
+           'filepath':    filepath,     # (       --> s     )
            'putfile':     putfile,      # (     $ --> b     )
            'releasefile': releasefile,  # (     $ --> b     )
            'sharefile':   sharefile}    # (     $ --> $ b   )
@@ -833,12 +848,14 @@ def quackery(source_string):
     ]'[ nested join
     protected put ]             is protect      (         -->         )
 
+  ' stack ' filepath put
+  protect filepath
+
   [ stack ]                     is dip.hold     (         --> s       )
   protect dip.hold
 
   [ dip.hold put
-    ]'[ do
-    dip.hold take ]             is dip          (       x --> x       )
+    ]'[ do dip.hold take ]      is dip          (       x --> x       )
 
   [ rot dip rot ]               is 2swap        ( x x x x --> x x x x )
 
@@ -1134,11 +1151,16 @@ def quackery(source_string):
 
   [ stack ]                     is history      (         --> s       )
 
-  [ protected share
-    [ dup [] != while
-      -1 split 0 peek
-      size history put again ]
-    drop
+  [ protected share history put
+    protected share 0
+    [ over size over
+      > while
+      2dup peek
+      size unrot
+      1+ again ]
+    2drop
+    protected share size pack
+    history put
     pack dup history put unpack
     stacksize history put
     nestdepth history put
@@ -1156,21 +1178,25 @@ def quackery(source_string):
         history share
         size - - times drop
         history take unpack
-        protected share
-        reverse
-        [ dup [] != while
-          -1 split 0 peek
-          dup size
-          history take -
+        history take unpack
+        history share size
+        [ dup 0 > while
+          1 -
+          history share
+          over peek
+          rot over size
+          swap -
           [ dup 0 > while
             over release
             1 - again ]
           2drop again ]
-        drop true ]
+        drop
+        history take
+        protected replace
+        true ]
       else
-        [ protected share
-          size 3 + times
-            [ history release ]
+        [ 5 times
+          [ history release ]
           false ] ]             is bailed       (         --> b       )
 
   [ quid swap quid = ]          is oats         (     x x --> b       )
@@ -1460,9 +1486,9 @@ def quackery(source_string):
           1 nesting tally
           space join
           swap dip join again ]
-      $ ']' join ] 
-    else 
-       [ drop 
+      $ ']' join ]
+    else
+       [ drop
          $ "Quackery was worried by a python."
          fail ] ]         resolves unbuild      (       x --> $       )
 
@@ -1530,11 +1556,11 @@ def quackery(source_string):
         temp share > iff
           [ cr drop dup size ]
         else sp 1+ swap echo$ ]
-    drop temp release ]          is wrap$        (     [ n -->         )
+    drop temp release ]         is wrap$        (     [ n -->         )
 
   [ names reverse 70 wrap$ cr
     builders reverse
-    70 wrap$ cr ]                is words        (         -->         )
+    70 wrap$ cr ]               is words        (         -->         )
 
   [ dup name? iff drop
     else
@@ -1564,21 +1590,22 @@ def quackery(source_string):
      actiontable actions name? names namenest nest$ oats bailed bail
      backup history shuffle random randomise initrandom prng prng.d
      prng.c prng.b prng.a rot64 64bits 64bitmask $->n char->n sort$
-     $> $< qacsfot sort sortwith sort.test not-do do-now now-do
-     add-to new-do to-do unpack pack reflect reverse nextword trim
-     printable found findwith matchitem mi.result mi.tidyup echo$
-     witheach makewith with.hold number$ decimal base digit lower
-     upper sp space cr carriage findseq behead stuff pluck of table
-     temp step refresh conclude i^ i times times.action times.count
-     times.start abs decurse depth 2over 2swap dip dip.hold protect
-     protected nested move tally replace release share stack while
-     until recurse do this ' copy clamp max min else iff if done
-     again 2drop 2dup within unrot tuck bit mod nip / - < xor != or
-     and not true false sharefile releasefile putfile input ding emit
-     quid operator? number? nest? size poke peek find join split []
-     take immovable put ]bailby[ ]do[ ]this[ ]'[ ]else[ ]iff[ ]if[
-     ]again[ ]done[ over rot swap drop dup return nestdepth stacksize
-     time ~ ^ | & >> << ** /mod * negate + 1+ > = nand fail python"
+     $> $< qacsfot sort sortwith sort.test not-do do-now now-do add-to
+     new-do to-do unpack pack reflect reverse nextword trim printable
+     found findwith matchitem mi.result mi.tidyup echo$ witheach
+     makewith with.hold number$ decimal base digit lower upper sp
+     space cr carriage findseq behead stuff pluck of table temp step
+     refresh conclude i^ i times times.action times.count times.start
+     abs decurse depth 2over 2swap dip dip.hold protect protected
+     nested move tally replace release share stack while until recurse
+     do this ' copy clamp max min else iff if done again 2drop 2dup
+     within unrot tuck bit mod nip / - < xor != or and not true false
+     sharefile releasefile putfile filepath input ding emit quid
+     operator? number? nest? size poke peek find join split [] take
+     immovable put ]bailby[ ]do[ ]this[ ]'[ ]else[ ]iff[ ]if[ ]again[
+     ]done[ over rot swap drop dup return nestdepth stacksize time ~ ^
+     | & >> << ** /mod * negate + 1+ > = nand fail python"
+
   nest$ namenest put
 
   [ table
@@ -1589,21 +1616,21 @@ def quackery(source_string):
     actiontable actions name? names namenest nest$ oats bailed bail
     backup history shuffle random randomise initrandom prng prng.d
     prng.c prng.b prng.a rot64 64bits 64bitmask $->n char->n sort$
-    $> $< qacsfot sort sortwith sort.test not-do do-now now-do
-    add-to new-do to-do unpack pack reflect reverse nextword trim
-    printable found findwith matchitem mi.result mi.tidyup echo$
-    witheach makewith with.hold number$ decimal base digit lower
-    upper sp space cr carriage findseq behead stuff pluck of table
-    temp step refresh conclude i^ i times times.action times.count
-    times.start abs decurse depth 2over 2swap dip dip.hold protect
-    protected nested move tally replace release share stack while
-    until recurse do this ' copy clamp max min else iff if done
-    again 2drop 2dup within unrot tuck bit mod nip / - < xor != or
-    and not true false sharefile releasefile putfile input ding emit
-    quid operator? number? nest? size poke peek find join split []
-    take immovable put ]bailby[ ]do[ ]this[ ]'[ ]else[ ]iff[ ]if[
-    ]again[ ]done[ over rot swap drop dup return nestdepth stacksize
-    time ~ ^ | & >> << ** /mod * negate + 1+ > = nand fail python ]
+    $> $< qacsfot sort sortwith sort.test not-do do-now now-do add-to
+    new-do to-do unpack pack reflect reverse nextword trim printable
+    found findwith matchitem mi.result mi.tidyup echo$ witheach
+    makewith with.hold number$ decimal base digit lower upper sp
+    space cr carriage findseq behead stuff pluck of table temp step
+    refresh conclude i^ i times times.action times.count times.start
+    abs decurse depth 2over 2swap dip dip.hold protect protected
+    nested move tally replace release share stack while until recurse
+    do this ' copy clamp max min else iff if done again 2drop 2dup
+    within unrot tuck bit mod nip / - < xor != or and not true false
+    sharefile releasefile putfile filepath input ding emit quid
+    operator? number? nest? size poke peek find join split [] take
+    immovable put ]bailby[ ]do[ ]this[ ]'[ ]else[ ]iff[ ]if[ ]again[
+    ]done[ over rot swap drop dup return nestdepth stacksize time ~ ^
+    | & >> << ** /mod * negate + 1+ > = nand fail python ]
 
                           resolves actions      (       n --> x       )
 
