@@ -975,7 +975,7 @@ def quackery(source_string):
     ' [ dup with.hold put
         size times ]
     ' [ with.hold share
-        i^ peek ]
+        i ~ peek ]
     rot join
     nested join
     ' [ with.hold release ]
