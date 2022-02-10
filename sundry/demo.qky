@@ -196,7 +196,7 @@
     join ]                       is inversion   (     [ [ --> [       )
 
   [ over size
-    factoradic inversion ]       is nperm       (     [ n -->         )
+    factoradic inversion ]       is nperm       (     [ n --> [       )
 
   say 'The 1236880662123rd permutation of' cr
   say '"uncopyrightable" is "'
