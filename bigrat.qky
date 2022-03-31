@@ -38,7 +38,10 @@
 
   [ rot * dip * reduce ]        is v*           ( n/d n/d --> n/d     )
 
-  [ 1/v v* ]                    is v/           ( n/d n/d --> n/d     )
+  [ 2over 2over
+    drop nip | iff
+      [ 1/v v* ]  done 
+    2drop 2drop 1 0 ]           is v/           ( n/d n/d --> n/d     )
 
   [ 1 ]                         is n->v         (       n --> n/d     )
 
