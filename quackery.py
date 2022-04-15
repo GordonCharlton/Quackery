@@ -1016,16 +1016,10 @@ def quackery(source_string):
     split swap ]                is nextword     (       $ --> $ $     )
 
   [ dup nest? if
-      [ [] swap witheach
-          [ nested
-            swap join ] ] ]     is reverse      (       x --> x       )
-
-                        forward is reflect
-  [ dup nest? if
-    [ [] swap witheach
-        [ reflect
-          nested
-          swap join ] ] ] resolves reflect      (       x --> x       )
+      [ dup size 2 < if done
+        dup size 2 / split
+        recurse swap
+        recurse join ] ]        is reverse      (       x --> x       )
 
   [ [] swap times
       [ swap nested join ]
@@ -1217,6 +1211,23 @@ def quackery(source_string):
                         forward is actions      (       n --> x       )
 
   [ ' actions ]                 is actiontable  (         --> x       )
+
+  [ actiontable share tuck
+    findwith [ over oats ] drop
+    swap found ]                is named?       (         x --> b     )
+
+                        forward is reflect      (         x --> x     )
+  [ dup nest? if
+      [ dup [] = if done
+        dup size 1 = iff
+          [ 0 peek
+            dup named? iff
+              nested done
+            reflect nested ]
+          done
+        dup size 2 / split
+        recurse swap
+        recurse join ] ]  resolves reflect      (       x --> x       )
 
   [ stack ]                     is buildernest  (         --> s       )
 
@@ -1587,14 +1598,14 @@ def quackery(source_string):
      shell echostack echoreturn return$ echo unbuild nesting quackery
      build releasewords restorewords backupwords unresolved b.to-do
      b.nesting message jobtable jobs builder? builders buildernest
-     actiontable actions name? names namenest nest$ oats bailed bail
-     backup history shuffle random randomise initrandom prng prng.d
-     prng.c prng.b prng.a rot64 64bits 64bitmask $->n char->n sort$
-     $> $< qacsfot sort sortwith sort.test not-do do-now now-do add-to
-     new-do to-do unpack pack reflect reverse nextword trim printable
-     found findwith matchitem mi.result mi.tidyup echo$ witheach
-     makewith with.hold number$ decimal base digit lower upper sp
-     space cr carriage findseq behead stuff pluck of table temp step
+     reflect named? actiontable actions name? names namenest nest$ oats
+     bailed bail backup history shuffle random randomise initrandom
+     prng prng.d prng.c prng.b prng.a rot64 64bits 64bitmask $->n
+     char->n sort$ $> $< qacsfot sort sortwith sort.test not-do do-now
+     now-do add-to new-do to-do unpack pack reverse nextword trim
+     printable found findwith matchitem mi.result mi.tidyup echo$
+     witheach makewith with.hold number$ decimal base digit lower upper
+     sp space cr carriage findseq behead stuff pluck of table temp step
      refresh conclude i^ i times times.action times.count times.start
      abs decurse depth 2over 2swap dip dip.hold protect protected
      nested move tally replace release share stack while until recurse
@@ -1613,14 +1624,14 @@ def quackery(source_string):
     shell echostack echoreturn return$ echo unbuild nesting quackery
     build releasewords restorewords backupwords unresolved b.to-do
     b.nesting message jobtable jobs builder? builders buildernest
-    actiontable actions name? names namenest nest$ oats bailed bail
-    backup history shuffle random randomise initrandom prng prng.d
-    prng.c prng.b prng.a rot64 64bits 64bitmask $->n char->n sort$
-    $> $< qacsfot sort sortwith sort.test not-do do-now now-do add-to
-    new-do to-do unpack pack reflect reverse nextword trim printable
-    found findwith matchitem mi.result mi.tidyup echo$ witheach
-    makewith with.hold number$ decimal base digit lower upper sp
-    space cr carriage findseq behead stuff pluck of table temp step
+    reflect named? actiontable actions name? names namenest nest$ oats
+    bailed bail backup history shuffle random randomise initrandom
+    prng prng.d prng.c prng.b prng.a rot64 64bits 64bitmask $->n
+    char->n sort$ $> $< qacsfot sort sortwith sort.test not-do do-now
+    now-do add-to new-do to-do unpack pack reverse nextword trim
+    printable found findwith matchitem mi.result mi.tidyup echo$
+    witheach makewith with.hold number$ decimal base digit lower upper
+    sp space cr carriage findseq behead stuff pluck of table temp step
     refresh conclude i^ i times times.action times.count times.start
     abs decurse depth 2over 2swap dip dip.hold protect protected
     nested move tally replace release share stack while until recurse
