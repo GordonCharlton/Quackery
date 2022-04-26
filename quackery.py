@@ -264,18 +264,12 @@ def quackery(source_string):
         from_return()
         to_return(-1)
 
-    def meta_if():
+    def meta_cjump():
+        expect_number()
+        howmany = from_stack()
         expect_number()
         if from_stack() == 0:
-            to_return(from_return() + 1)
-
-    def meta_iff():
-        expect_number()
-        if from_stack() == 0:
-            to_return(from_return() + 2)
-
-    def meta_else():
-        to_return(from_return() + 1)
+            to_return(from_return() + howmany)
 
     def meta_literal():
         pc = from_return() + 1
@@ -516,9 +510,7 @@ def quackery(source_string):
            'over':        over,         # (   x x --> x x x )
            ']done[':      meta_done,    # (       -->       )
            ']again[':     meta_again,   # (       -->       )
-           ']if[':        meta_if,      # (     b -->       )
-           ']iff[':       meta_iff,     # (     b -->       )
-           ']else[':      meta_else,    # (       -->       )
+           ']cjump[':     meta_cjump,   # (   b n -->       )
            "]'[":         meta_literal, # (       --> x     )
            ']this[':      meta_this,    # (       --> [     )
            ']do[':        meta_do,      # (     x -->       )
@@ -594,9 +586,9 @@ def quackery(source_string):
         if len(source) > 0:
             char = source[0]
             source = source[1:]
-            return(char)
+            return char
         else:
-            return('')
+            return ''
 
     def next_word():
         result = ''
@@ -607,23 +599,23 @@ def quackery(source_string):
             if ord(char) < 33:
                 if result == '':
                     continue
-                return(result)
+                return result
             result += char
 
     def one_char():
         while True:
             char = next_char()
             if char == '':
-                return(char)
+                return char
             if ord(char) < 33:
                 continue
-            return(char)
+            return char
 
     def get_name():
         name = next_word()
         if name == '':
             sys.exit('Unexpected end of program text.')
-        return(name)
+        return name
 
     def check_build():
         nonlocal current_build
@@ -696,7 +688,7 @@ def quackery(source_string):
         if len(hexstr) > 1 and hexstr[0] == '-':
             hexstr = hexstr[1:]
         for char in hexstr:
-            if char not in '0123456789abcdefABCDEF':
+            if char.lower() not in '0123456789abcdef':
                 return False
         return True
 
@@ -736,7 +728,7 @@ def quackery(source_string):
                 current_build = the_nest
                 word = next_word()
                 if word == '':
-                    return(the_nest)
+                    return the_nest
                 elif word == '[':
                     nesting += 1
                     the_nest.append(sub_build())
@@ -802,11 +794,11 @@ def quackery(source_string):
 
   [ ]done[ ]                    is done         (         -->         )
 
-  [ ]if[ ]                      is if           (       b -->         )
+  [ 1 ]cjump[ ]                 is if           (     b n -->         )
 
-  [ ]iff[ ]                     is iff          (       b -->         )
+  [ 2 ]cjump[ ]                 is iff          (     b n -->         )
 
-  [ ]else[ ]                    is else         (         -->         )
+  [ false 1 ]cjump[ ]           is else         (         -->         )
 
   [ 2dup > if swap drop ]       is min          (   n n n --> n       )
 
@@ -1613,7 +1605,7 @@ def quackery(source_string):
      within unrot tuck bit mod nip / - < xor != or and not true false
      sharefile releasefile putfile filepath input ding emit quid
      operator? number? nest? size poke peek find join split [] take
-     immovable put ]bailby[ ]do[ ]this[ ]'[ ]else[ ]iff[ ]if[ ]again[
+     immovable put ]bailby[ ]do[ ]this[ ]'[ ]cjump[ ]again[
      ]done[ over rot swap drop dup return nestdepth stacksize time ~ ^
      | & >> << ** /mod * negate + 1+ > = nand fail python"
 
@@ -1639,7 +1631,7 @@ def quackery(source_string):
     within unrot tuck bit mod nip / - < xor != or and not true false
     sharefile releasefile putfile filepath input ding emit quid
     operator? number? nest? size poke peek find join split [] take
-    immovable put ]bailby[ ]do[ ]this[ ]'[ ]else[ ]iff[ ]if[ ]again[
+    immovable put ]bailby[ ]do[ ]this[ ]'[ ]cjump[ ]again[
     ]done[ over rot swap drop dup return nestdepth stacksize time ~ ^
     | & >> << ** /mod * negate + 1+ > = nand fail python ]
 
@@ -1657,7 +1649,7 @@ def quackery(source_string):
                   """
 
     traverse(build(predefined))
-    while(True):
+    while True:
         to_stack([ord(char) for char in source_string])
         try:
             traverse(build('quackery'))
@@ -1670,21 +1662,20 @@ def quackery(source_string):
         except Exception as diagnostics:
             print('Quackery system damage detected.')
             print('Python reported: ' + str(diagnostics))
-            sys.exit()
+            sys.exit(1)
         else:
             traverse(build('stacksize pack decimal unbuild'))
             result = ''
-            for ch in (qstack[0][2:-2]):
+            for ch in qstack[0][2:-2]:
                 result += chr(ch)
-            return(result)
+            return result
 
 if __name__ == '__main__':
     if len(sys.argv) > 1:
         filename = sys.argv[1]
         try:
-            f = open(filename)
-            filetext = f.read()
-            f.close()
+            with open(filename) as f:
+                filetext = f.read()
         except FileNotFoundError:
             print('Cannot find file "' + filename + '"')
         else:
@@ -1700,7 +1691,7 @@ if __name__ == '__main__':
             except Exception as diagnostics:
                 print('Quackery system damage detected.')
                 print('Python reported: ' + str(diagnostics))
-                sys.exit()
+                sys.exit(1)
     else:
         print()
         print('Welcome to Quackery.')
