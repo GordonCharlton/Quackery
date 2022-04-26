@@ -680,7 +680,7 @@ def quackery(source_string):
         while char != delimiter:
             char = next_char()
             if char == '':
-                raise EOFError('No end of string found.')
+                raise EOFError('Endless string discovered.')
             if char != delimiter:
                 result.append(ord(char))
         current_build.append([[meta_literal], result])
@@ -1353,7 +1353,7 @@ def quackery(source_string):
         bail ]
     behead over find
     2dup swap found not if
-      [ $ 'Unterminated string discovered.'
+      [ $ 'Endless string discovered.'
         message put
         bail ]
     split behead drop
