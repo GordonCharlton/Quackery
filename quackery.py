@@ -264,12 +264,18 @@ def quackery(source_string):
         from_return()
         to_return(-1)
 
-    def meta_cjump():
-        expect_number()
-        howmany = from_stack()
+    def meta_if():
         expect_number()
         if from_stack() == 0:
-            to_return(from_return() + howmany)
+            to_return(from_return() + 1)
+
+    def meta_iff():
+        expect_number()
+        if from_stack() == 0:
+            to_return(from_return() + 2)
+
+    def meta_else():
+        to_return(from_return() + 1)
 
     def meta_literal():
         pc = from_return() + 1
@@ -510,7 +516,9 @@ def quackery(source_string):
            'over':        over,         # (   x x --> x x x )
            ']done[':      meta_done,    # (       -->       )
            ']again[':     meta_again,   # (       -->       )
-           ']cjump[':     meta_cjump,   # (   b n -->       )
+           ']if[':        meta_if,      # (     b -->       )
+           ']iff[':       meta_iff,     # (     b -->       )
+           ']else[':      meta_else,    # (     b -->       )
            "]'[":         meta_literal, # (       --> x     )
            ']this[':      meta_this,    # (       --> [     )
            ']do[':        meta_do,      # (     x -->       )
@@ -794,11 +802,11 @@ def quackery(source_string):
 
   [ ]done[ ]                    is done         (         -->         )
 
-  [ 1 ]cjump[ ]                 is if           (     b n -->         )
+  [ ]if[ ]                      is if           (     b n -->         )
 
-  [ 2 ]cjump[ ]                 is iff          (     b n -->         )
+  [ ]iff[ ]                     is iff          (     b n -->         )
 
-  [ false 1 ]cjump[ ]           is else         (         -->         )
+  [ ]else[ ]                    is else         (         -->         )
 
   [ 2dup > if swap drop ]       is min          (   n n n --> n       )
 
@@ -1605,7 +1613,7 @@ def quackery(source_string):
      within unrot tuck bit mod nip / - < xor != or and not true false
      sharefile releasefile putfile filepath input ding emit quid
      operator? number? nest? size poke peek find join split [] take
-     immovable put ]bailby[ ]do[ ]this[ ]'[ ]cjump[ ]again[
+     immovable put ]bailby[ ]do[ ]this[ ]'[ ]if[ ]iff[ ]else[ ]again[
      ]done[ over rot swap drop dup return nestdepth stacksize time ~ ^
      | & >> << ** /mod * negate + 1+ > = nand fail python"
 
@@ -1631,7 +1639,7 @@ def quackery(source_string):
     within unrot tuck bit mod nip / - < xor != or and not true false
     sharefile releasefile putfile filepath input ding emit quid
     operator? number? nest? size poke peek find join split [] take
-    immovable put ]bailby[ ]do[ ]this[ ]'[ ]cjump[ ]again[
+    immovable put ]bailby[ ]do[ ]this[ ]'[ ]if[ ]iff[ ]else[ ]again[
     ]done[ over rot swap drop dup return nestdepth stacksize time ~ ^
     | & >> << ** /mod * negate + 1+ > = nand fail python ]
 
