@@ -512,7 +512,7 @@ def quackery(source_string):
            ']again[':     meta_again,   # (       -->       )
            ']if[':        meta_if,      # (     b -->       )
            ']iff[':       meta_iff,     # (     b -->       )
-           ']else[':      meta_else,    # (     b -->       )
+           ']else[':      meta_else,    # (       -->       )
            "]'[":         meta_literal, # (       --> x     )
            ']this[':      meta_this,    # (       --> [     )
            ']do[':        meta_do,      # (     x -->       )
