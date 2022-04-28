@@ -1694,7 +1694,8 @@ if __name__ == '__main__':
                 print('Python error: ' + str(diagnostics))
                 sys.exit(1)
     else:
-        print('\nWelcome to Quackery.\n\nEnter "leave" to leave the shell.')
+        print(‘\nWelcome to Quackery.’)
+        print(‘\nEnter "leave" to leave the shell.')
         quackscript = r"""
 
           $ 'extensions.qky' dup name? not
