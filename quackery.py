@@ -796,9 +796,9 @@ def quackery(source_string):
 
   [ ]done[ ]                    is done         (         -->         )
 
-  [ ]if[ ]                      is if           (     b n -->         )
+  [ ]if[ ]                      is if           (       b -->         )
 
-  [ ]iff[ ]                     is iff          (     b n -->         )
+  [ ]iff[ ]                     is iff          (       b -->         )
 
   [ ]else[ ]                    is else         (         -->         )
 
@@ -1607,7 +1607,7 @@ def quackery(source_string):
      within unrot tuck bit mod nip / - < xor != or and not true false
      sharefile releasefile putfile filepath input ding emit quid
      operator? number? nest? size poke peek find join split [] take
-     immovable put ]bailby[ ]do[ ]this[ ]'[ ]if[ ]iff[ ]else[ ]again[
+     immovable put ]bailby[ ]do[ ]this[ ]'[ ]else[ ]iff[ ]if[ ]again[
      ]done[ over rot swap drop dup return nestdepth stacksize time ~ ^
      | & >> << ** /mod * negate + 1+ > = nand fail python"
 
@@ -1633,7 +1633,7 @@ def quackery(source_string):
     within unrot tuck bit mod nip / - < xor != or and not true false
     sharefile releasefile putfile filepath input ding emit quid
     operator? number? nest? size poke peek find join split [] take
-    immovable put ]bailby[ ]do[ ]this[ ]'[ ]if[ ]iff[ ]else[ ]again[
+    immovable put ]bailby[ ]do[ ]this[ ]'[ ]else[ ]iff[ ]if[ ]again[
     ]done[ over rot swap drop dup return nestdepth stacksize time ~ ^
     | & >> << ** /mod * negate + 1+ > = nand fail python ]
 
