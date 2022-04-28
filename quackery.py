@@ -3,6 +3,7 @@
 import time
 import sys
 import os
+import types
 try:
     import readline
 except:
@@ -29,13 +30,13 @@ def quackery(source_string):
                             '\n  Return stack: ' + str(returnstack))
 
     def isNest(item):
-        return(isinstance(item, list))
+        return isinstance(item, list)
 
     def isNumber(item):
-        return(isinstance(item, int))
+        return isinstance(item, int)
 
     def isOperator(item):
-        return(isinstance(item, type(lambda: None)))
+        return isinstance(item, types.FunctionType)
 
     def expect_something():
         nonlocal qstack
@@ -63,19 +64,19 @@ def quackery(source_string):
     def from_stack():
         nonlocal qstack
         expect_something()
-        return(qstack.pop())
+        return qstack.pop()
 
     def string_from_stack():
         expect_nest()
         result = ''
         for ch in from_stack():
-            if ch == 13:
+            if ch == 13: # \r
                 result += '\n'
             elif 31 < ch < 127:
                 result += chr(ch)
             else:
-                result += '?'
-        return(result)
+                result += '?' # XXX @dragoncoder047 maybe use \uFFFD on platforms that support unicode?
+        return result
 
     def string_to_stack(str):
         result = []
@@ -85,7 +86,7 @@ def quackery(source_string):
             elif 31 < ord(ch) < 127:
                 result.append(ord(ch))
             else:
-                result.append(ord('?'))
+                result.append(ord('?')) # XXX @dragoncoder047 maybe \0 or NULL to signify bad char?
         to_stack(result)
 
     def python():
@@ -126,13 +127,13 @@ def quackery(source_string):
         to_stack(a)
         to_stack(b)
 
-    def rot():
+    def rot(): # XXX @dragoncoder047 maybe simplify to [ dip swap swap ] is rot ? There are no cyclic references that would prevent this
         a = from_stack()
         swap()
         to_stack(a)
         swap()
 
-    def over():
+    def over(): # XXX @dragoncoder047 maybe simplify to [ dip dup swap ] is over ? same reason as above
         a = from_stack()
         dup()
         to_stack(a)
@@ -140,7 +141,7 @@ def quackery(source_string):
 
     def nest_depth():
         nonlocal rstack
-        to_stack(len(rstack)//2)
+        to_stack(len(rstack) // 2)
 
     def to_return(item):
         nonlocal rstack
@@ -150,7 +151,7 @@ def quackery(source_string):
         nonlocal rstack
         if rstack == []:
             failed('Return stack unexpectedly empty.')
-        return(rstack.pop())
+        return rstack.pop()
 
     true = 1
 
@@ -201,7 +202,7 @@ def quackery(source_string):
         expect_number()
         a = from_stack()
         if a == 0:
-            failed('Cannot divide by zero.')
+            failed('Division by zero.')
         expect_number()
         results = divmod(from_stack(), a)
         to_stack(results[0])
@@ -211,7 +212,7 @@ def quackery(source_string):
         expect_number()
         a = from_stack()
         if a < 0:
-            failed('Cannot ** by a negative number: ' + str(a))
+            failed('Tried to raise to a negative power: ' + str(a))
         expect_number()
         to_stack(from_stack() ** a)
 
@@ -219,7 +220,7 @@ def quackery(source_string):
         expect_number()
         a = from_stack()
         if a < 0:
-            failed('Cannot << by a negative number: ' + str(a))
+            failed('Cannot << by a negative amount: ' + str(a))
         expect_number()
         to_stack(from_stack() << a)
 
@@ -227,7 +228,7 @@ def quackery(source_string):
         expect_number()
         a = from_stack()
         if a < 0:
-            failed('Cannot >> by a negative number: ' + str(a))
+            failed('Cannot >> by a negative amount: ' + str(a))
         expect_number()
         to_stack(from_stack() >> a)
 
@@ -326,10 +327,8 @@ def quackery(source_string):
         if len(a) == 0:
             failed('Unexpectedly empty nest.')
         if len(a) == 1:
-            if isNest(a[0]):
-                if len(a[0]) > 0:
-                    if a[0][0] == immovable:
-                        failed('Cannot remove an immovable item.')
+            if isNest(a[0]) and len(a[0]) > 0 and a[0][0] == immovable:
+                failed('Cannot remove an immovable item.')
         to_stack(a.pop())
 
     def create_nest():
@@ -352,7 +351,7 @@ def quackery(source_string):
         a = from_stack()
         if not isNest(a):
             a = [a]
-        to_stack(a+b)
+        to_stack(a + b)
 
     def qsize():
         expect_nest()
@@ -375,7 +374,7 @@ def quackery(source_string):
         nest = from_stack()
         if index >= len(nest) or (
            index < 0 and len(nest) < abs(index)):
-            failed('Cannot access an item outside a nest.')
+            failed('Cannot peek an item outside a nest.')
         else:
             to_stack(nest[index])
 
@@ -388,7 +387,7 @@ def quackery(source_string):
         value = from_stack()
         if index >= len(nest) or (
            index < 0 and len(nest) < abs(index)):
-            failed('Cannot access an item outside a nest.')
+            failed('Cannot poke an item outside a nest.')
         else:
             nest[index] = value
             to_stack(nest)
@@ -413,14 +412,14 @@ def quackery(source_string):
         expect_number()
         char = from_stack()
         if char == 13:
-            print()
+            sys.stdout.write('\n')
         elif 31 < char < 127:
-            print(chr(char), end='')
+            sys.stdout.write(chr(char))
         else:
-            print('?', end='')
+            sys.stdout.write('?') # XXX @dragoncoder047 maybe use \uFFFD on platforms that support unicode?
 
     def ding():
-        print('\a', end='')
+        sys.stdout.write('\a')
 
     def qinput():
         prompt = string_from_stack()
@@ -436,17 +435,14 @@ def quackery(source_string):
             filename = string_from_stack() + filename
         filetext = string_from_stack()
         try:
-            f = open(filename, 'x')
-            f.close()
+            with open(filename, 'x'): pass
         except FileExistsError:
             to_stack(false)
         except:
             raise
         else:
             try:
-                f = open(filename, 'w')
-                f.write(filetext)
-                f.close()
+                with open(filename, 'w') as f: f.write(filetext)
             except:
                 raise
             else:
@@ -475,9 +471,7 @@ def quackery(source_string):
             to_stack(filepath[-1])
             filename = string_from_stack() + filename
         try:
-            f = open(filename)
-            filetext = f.read()
-            f.close()
+            with open(filename) as f: filetext = f.read()
         except FileNotFoundError:
             to_stack(false)
         except:
@@ -561,7 +555,7 @@ def quackery(source_string):
         program_counter = 0
         while True:
             if program_counter >= len(current_nest):
-                if rstack == []:
+                if len(rstack) == 0:
                     break
                 else:
                     program_counter = from_return()
@@ -594,9 +588,9 @@ def quackery(source_string):
         if len(source) > 0:
             char = source[0]
             source = source[1:]
-            return(char)
+            return char
         else:
-            return('')
+            return ''
 
     def next_word():
         result = ''
@@ -607,28 +601,28 @@ def quackery(source_string):
             if ord(char) < 33:
                 if result == '':
                     continue
-                return(result)
+                return result
             result += char
 
     def one_char():
         while True:
             char = next_char()
             if char == '':
-                return(char)
+                return char
             if ord(char) < 33:
                 continue
-            return(char)
+            return char
 
     def get_name():
         name = next_word()
         if name == '':
-            sys.exit('Unexpected end of program text.')
-        return(name)
+            raise EOFError('Unexpected end of program text.')
+        return name
 
     def check_build():
         nonlocal current_build
         if len(current_build) == 0:
-            sys.exit('Unexpected naming.')
+            raise IndexError('Nothing to name.')
 
     def qis():
         nonlocal operators
@@ -642,13 +636,13 @@ def quackery(source_string):
         while word != ')':
             word = next_word()
             if word == '':
-                sys.exit('Unfinished comment.')
+                raise EOFError('Unclosed comment.')
 
     def endcomment():
-        sys.exit('Unexpected end of comment.')
+        raise SyntaxError('Too many end of comments.')
 
     def unresolved():
-        sys.exit('Unresolved forward reference.')
+        raise TypeError('Unresolved forward reference.')
 
     def forward():
         nonlocal current_build
@@ -659,17 +653,17 @@ def quackery(source_string):
         name = get_name()
         if name in operators:
             if operators[name][0] != unresolved:
-                sys.exit(name + ' is not a forward reference.')
+                raise TypeError(name + ' is not a forward reference.')
             check_build()
             operators[name][0] = current_build.pop()
         else:
-            sys.exit(' Unrecognised word: ' + name)
+            raise NameError('Unrecognised word: ' + name)
 
     def char_literal():
         nonlocal current_build
         char = one_char()
         if char == '':
-            sys.exit('No character found.')
+            raise SyntaxError('No character found.')
         current_build.append(ord(char))
 
     def string_literal():
@@ -679,14 +673,14 @@ def quackery(source_string):
         while delimiter == '':
             char = next_char()
             if char == '':
-                sys.exit('No string found.')
+                raise EOFError('No string found.')
             if ord(char) > 32:
                 delimiter = char
                 char = ''
         while char != delimiter:
             char = next_char()
             if char == '':
-                sys.exit('No end of string found.')
+                raise EOFError('Endless string discovered.')
             if char != delimiter:
                 result.append(ord(char))
         current_build.append([[meta_literal], result])
@@ -696,7 +690,7 @@ def quackery(source_string):
         if len(hexstr) > 1 and hexstr[0] == '-':
             hexstr = hexstr[1:]
         for char in hexstr:
-            if char not in '0123456789abcdefABCDEF':
+            if char.lower() not in '0123456789abcdef':
                 return False
         return True
 
@@ -704,7 +698,7 @@ def quackery(source_string):
         nonlocal current_build
         word = get_name()
         if not ishex(word):
-            sys.exit(word + " is not hexadecimal.")
+            raise SyntaxError(word + " is not hexadecimal.")
         current_build.append(int(word, 16))
 
     builders = {'is':       qis,
@@ -736,14 +730,14 @@ def quackery(source_string):
                 current_build = the_nest
                 word = next_word()
                 if word == '':
-                    return(the_nest)
+                    return the_nest
                 elif word == '[':
                     nesting += 1
                     the_nest.append(sub_build())
                 elif word == ']':
                     nesting -= 1
                     if nesting < 0:
-                        sys.exit('Unexpected end of nest.')
+                        raise SyntaxError('Unexpected end of nest.')
                     return(the_nest)
                 elif word in builders.keys():
                     builders[word]()
@@ -752,11 +746,11 @@ def quackery(source_string):
                 elif isinteger(word):
                     the_nest.append(int(word, 10))
                 else:
-                    sys.exit('Unrecognised word: ' + word)
+                    raise NameError('Unrecognised word: ' + word)
 
         the_nest = sub_build()
         if nesting > 0:
-            sys.exit('Unfinished nest.')
+            raise SyntaxError('Unfinished nest.')
         return(the_nest)
 
     predefined = r"""
@@ -1264,7 +1258,7 @@ def quackery(source_string):
     dip [ nested join ] ]       is b.]          (   [ [ $ --> [ $     )
 
   [ over [] = if
-      [ $ '"is" needs something to name.'
+      [ $ '"is" needs something to name before it.'
         message put
         bail ]
     dup $ '' = if
@@ -1282,7 +1276,7 @@ def quackery(source_string):
         actiontable put ] ]     is b.is         (     [ $ --> [ $     )
 
   [ over [] = if
-      [ $ '"builds" needs something to name.'
+      [ $ '"builds" needs something to name before it.'
         message put
         bail ]
     dup $ '' = if
@@ -1318,11 +1312,11 @@ def quackery(source_string):
         copy nested join ] ]    is b.forward    (     [ $ --> [ $     )
 
    [ over [] = if
-      [ $ '"resolves" needs something to resolve with.'
+      [ $ '"resolves" needs something to resolve.'
         message put
         bail ]
     dup $ '' = if
-      [ $ '"resolves" needs a name to resolve.'
+      [ $ '"resolves" needs a name to resolve into.'
         message put
         bail ]
      dip [ -1 split ]
@@ -1657,7 +1651,7 @@ def quackery(source_string):
                   """
 
     traverse(build(predefined))
-    while(True):
+    while True:
         to_stack([ord(char) for char in source_string])
         try:
             traverse(build('quackery'))
@@ -1669,43 +1663,38 @@ def quackery(source_string):
                 raise
         except Exception as diagnostics:
             print('Quackery system damage detected.')
-            print('Python reported: ' + str(diagnostics))
-            sys.exit()
+            print('Python error: ' + str(diagnostics))
+            sys.exit(1)
         else:
             traverse(build('stacksize pack decimal unbuild'))
             result = ''
-            for ch in (qstack[0][2:-2]):
+            for ch in qstack[0][2:-2]:
                 result += chr(ch)
-            return(result)
+            return result
 
 if __name__ == '__main__':
     if len(sys.argv) > 1:
         filename = sys.argv[1]
         try:
-            f = open(filename)
-            filetext = f.read()
-            f.close()
+            with open(filename) as f:
+                filetext = f.read()
         except FileNotFoundError:
-            print('Cannot find file "' + filename + '"')
+            print('file not found: "' + filename + '"')
+            sys.exit(1)
         else:
             try:
                 print(quackery(filetext))
                 print()
             except QuackeryError as diagnostics:
-                print()
-                print('Quackery crashed.')
-                print()
+                print('\nQuackery crashed.\n')
                 print(diagnostics)
                 print()
             except Exception as diagnostics:
                 print('Quackery system damage detected.')
-                print('Python reported: ' + str(diagnostics))
-                sys.exit()
+                print('Python error: ' + str(diagnostics))
+                sys.exit(1)
     else:
-        print()
-        print('Welcome to Quackery.')
-        print()
-        print('Enter "leave" to leave the shell.')
+        print('\nWelcome to Quackery.\n\nEnter "leave" to leave the shell.')
         quackscript = r"""
 
           $ 'extensions.qky' dup name? not
@@ -1717,10 +1706,7 @@ if __name__ == '__main__':
 
         try:
             quackery(quackscript)
-            print()
         except QuackeryError as diagnostics:
-            print()
-            print('Quackery crashed.')
-            print()
+            print('\nQuackery crashed.\n')
             print(diagnostics)
             print()
