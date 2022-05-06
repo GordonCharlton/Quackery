@@ -75,7 +75,7 @@ def quackery(source_string):
             elif 31 < ch < 127:
                 result += chr(ch)
             else:
-                result += '?' # XXX @dragoncoder047 maybe use \uFFFD on platforms that support unicode?
+                result += '?'
         return result
 
     def string_to_stack(str):
@@ -86,7 +86,7 @@ def quackery(source_string):
             elif 31 < ord(ch) < 127:
                 result.append(ord(ch))
             else:
-                result.append(ord('?')) # XXX @dragoncoder047 maybe \0 or NULL to signify bad char?
+                result.append(ord('?'))
         to_stack(result)
 
     def python():
@@ -127,13 +127,13 @@ def quackery(source_string):
         to_stack(a)
         to_stack(b)
 
-    def rot(): # XXX @dragoncoder047 maybe simplify to [ dip swap swap ] is rot ? There are no cyclic references that would prevent this
+    def rot():
         a = from_stack()
         swap()
         to_stack(a)
         swap()
 
-    def over(): # XXX @dragoncoder047 maybe simplify to [ dip dup swap ] is over ? same reason as above
+    def over():
         a = from_stack()
         dup()
         to_stack(a)
@@ -416,8 +416,7 @@ def quackery(source_string):
         elif 31 < char < 127:
             sys.stdout.write(chr(char))
         else:
-            sys.stdout.write('?') # XXX @dragoncoder047 maybe use \uFFFD on platforms that support unicode?
-
+            sys.stdout.write('?')
     def ding():
         sys.stdout.write('\a')
 
