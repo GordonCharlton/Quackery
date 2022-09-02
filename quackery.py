@@ -738,9 +738,9 @@ def quackery(source_string):
                     if nesting < 0:
                         raise SyntaxError('Unexpected end of nest.')
                     return(the_nest)
-                elif word in builders.keys():
+                elif word in builders:
                     builders[word]()
-                elif word in operators.keys():
+                elif word in operators:
                     the_nest.append(operators[word])
                 elif isinteger(word):
                     the_nest.append(int(word, 10))
