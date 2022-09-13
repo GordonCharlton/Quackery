@@ -577,10 +577,9 @@ def quackery(source_string):
                 failed('Quackery was worried by a python.')
 
     def isinteger(string):
-        numstr = string
-        if len(numstr) > 0 and numstr[0] == '-':
-            numstr = numstr[1:]
-        return numstr.isdigit()
+        if len(string) > 0 and string[0] == '-':
+            string = string[1:]
+        return string.isdigit()
 
     def next_char():
         nonlocal source
@@ -685,10 +684,9 @@ def quackery(source_string):
         current_build.append([[meta_literal], result])
 
     def ishex(string):
-        hexstr = string
-        if len(hexstr) > 1 and hexstr[0] == '-':
-            hexstr = hexstr[1:]
-        for char in hexstr:
+        if len(string) > 1 and string[0] == '-':
+            string = string[1:]
+        for char in string:
             if char.lower() not in '0123456789abcdef':
                 return False
         return True
