@@ -686,10 +686,7 @@ def quackery(source_string):
     def ishex(string):
         if len(string) > 1 and string[0] == '-':
             string = string[1:]
-        for char in string:
-            if char.lower() not in '0123456789abcdef':
-                return False
-        return True
+        return all(char in '0123456789ABCDEFabcdef' for char in string)
 
     def hexnum():
         nonlocal current_build
