@@ -148,7 +148,13 @@
       [ 2drop ]
     else
       [ vulgar$ space
-        swap join join ] ]      is proper$      (     n/d --> $       )
+        swap join join ]
+    2 split over $ "0 " =
+    iff nip done
+    join
+    3 split over $ "-0 " =
+    if [ nip char - swap ]
+    join ]                      is proper$      (     n/d --> $       )
 
   [ behead dup char . =
     if [ char 0 swap join ]
