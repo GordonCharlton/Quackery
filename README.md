@@ -50,7 +50,7 @@ That the Quackery language has similarities to Forth (also an
 extensible assembler for a stack processor), that it leans on Python
 for support for dynamic arrays and bignums, and that the majority of
 Quackery is written in Quackery all make for a very compact
-implementation, under 50k of source code. The downsides are that it is
+implementation, under 48k of source code. The downsides are that it is
 rather slow by modern standards, and that it is by no means "fully
 featured".
 
