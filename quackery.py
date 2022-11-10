@@ -749,898 +749,898 @@ def quackery(source_string):
 
     predefined = r"""
 
-  [ 0 ]                         is false        (         --> b       )
+[ 0 ]                         is false        (         --> b       )
 
-  [ 1 ]                         is true         (         --> b       )
+[ 1 ]                         is true         (         --> b       )
 
-  [ dup nand ]                  is not          (       b --> b       )
+[ dup nand ]                  is not          (       b --> b       )
 
-  [ nand not ]                  is and          (     b b --> b       )
+[ nand not ]                  is and          (     b b --> b       )
 
-  [ not swap not nand ]         is or           (     b b --> b       )
+[ not swap not nand ]         is or           (     b b --> b       )
 
-  [ = not ]                     is !=           (     x x --> b       )
+[ = not ]                     is !=           (     x x --> b       )
 
-  [ not swap not != ]           is xor          (     b b --> b       )
+[ not swap not != ]           is xor          (     b b --> b       )
 
-  [ swap > ]                    is <            (     n n --> b       )
+[ swap > ]                    is <            (     n n --> b       )
 
-  [ negate + ]                  is -            (       n --> n       )
+[ negate + ]                  is -            (       n --> n       )
 
-  [ /mod drop ]                 is /            (     n n --> n       )
+[ /mod drop ]                 is /            (     n n --> n       )
 
-  [ swap drop ]                 is nip          (     x x --> x       )
+[ swap drop ]                 is nip          (     x x --> x       )
 
-  [ /mod nip ]                  is mod          (     n n --> n       )
+[ /mod nip ]                  is mod          (     n n --> n       )
 
-  [ 1 swap << ]                 is bit          (       n --> n       )
+[ 1 swap << ]                 is bit          (       n --> n       )
 
-  [ swap over ]                 is tuck         (     x x --> x x x   )
+[ swap over ]                 is tuck         (     x x --> x x x   )
 
-  [ rot rot ]                   is unrot        (   x x x --> x x x   )
+[ rot rot ]                   is unrot        (   x x x --> x x x   )
 
-  [ rot tuck >
-    unrot > not and ]           is within       (   n n n --> b       )
+[ rot tuck >
+  unrot > not and ]           is within       (   n n n --> b       )
 
-  [ over over ]                 is 2dup         (     x x --> x x x x )
+[ over over ]                 is 2dup         (     x x --> x x x x )
 
-  [ drop drop ]                 is 2drop        (     x x -->         )
+[ drop drop ]                 is 2drop        (     x x -->         )
 
-  [ ]again[ ]                   is again        (         -->         )
+[ ]again[ ]                   is again        (         -->         )
 
-  [ ]done[ ]                    is done         (         -->         )
+[ ]done[ ]                    is done         (         -->         )
 
-  [ ]if[ ]                      is if           (       b -->         )
+[ ]if[ ]                      is if           (       b -->         )
 
-  [ ]iff[ ]                     is iff          (       b -->         )
+[ ]iff[ ]                     is iff          (       b -->         )
 
-  [ ]else[ ]                    is else         (         -->         )
+[ ]else[ ]                    is else         (         -->         )
 
-  [ 2dup > if swap drop ]       is min          (   n n n --> n       )
+[ 2dup > if swap drop ]       is min          (   n n n --> n       )
 
-  [ 2dup < if swap drop ]       is max          (   n n n --> n       )
+[ 2dup < if swap drop ]       is max          (   n n n --> n       )
 
-  [ rot min max ]               is clamp        (   n n n --> n       )
+[ rot min max ]               is clamp        (   n n n --> n       )
 
-  [ dup nest? iff [] join ]     is copy         (       [ --> [       )
+[ dup nest? iff [] join ]     is copy         (       [ --> [       )
 
-  [ ]'[ ]                       is '            (         --> x       )
+[ ]'[ ]                       is '            (         --> x       )
 
-  [ ]this[ ]                    is this         (         --> [       )
+[ ]this[ ]                    is this         (         --> [       )
 
-  [ ]do[ ]                      is do           (       x -->         )
+[ ]do[ ]                      is do           (       x -->         )
 
-  [ ]this[ do ]                 is recurse      (         -->         )
+[ ]this[ do ]                 is recurse      (         -->         )
 
-  [ not if ]again[ ]            is until        (       b -->         )
+[ not if ]again[ ]            is until        (       b -->         )
 
-  [ not if ]done[ ]             is while        (       b -->         )
+[ not if ]done[ ]             is while        (       b -->         )
 
-  [ immovable ]this[ ]done[ ]   is stack        (         --> s       )
+[ immovable ]this[ ]done[ ]   is stack        (         --> s       )
 
-  [ dup take dup rot put ]      is share        (       s --> x       )
+[ dup take dup rot put ]      is share        (       s --> x       )
 
-  [ take drop ]                 is release      (       s -->         )
+[ take drop ]                 is release      (       s -->         )
 
-  [ dup release put ]           is replace      (     x s -->         )
+[ dup release put ]           is replace      (     x s -->         )
 
-  [ dup take rot + swap put ]   is tally        (     n s -->         )
+[ dup take rot + swap put ]   is tally        (     n s -->         )
 
-  [ swap take swap put ]        is move         (     s s -->         )
+[ swap take swap put ]        is move         (     s s -->         )
 
-  [ [] tuck put ]               is nested       (       x --> [       )
+[ [] tuck put ]               is nested       (       x --> [       )
 
-  [ stack [ ] ]                 is protected    (         --> s       )
+[ stack [ ] ]                 is protected    (         --> s       )
 
-  [ protected take
-    ]'[ nested join
-    protected put ]             is protect      (         -->         )
+[ protected take
+  ]'[ nested join
+  protected put ]             is protect      (         -->         )
 
-  ' stack ' filepath put
-  protect filepath
+' stack ' filepath put
+protect filepath
 
-  [ stack ]                     is dip.hold     (         --> s       )
-  protect dip.hold
+[ stack ]                     is dip.hold     (         --> s       )
+protect dip.hold
 
-  [ dip.hold put
-    ]'[ do dip.hold take ]      is dip          (       x --> x       )
+[ dip.hold put
+  ]'[ do dip.hold take ]      is dip          (       x --> x       )
 
-  [ rot dip rot ]               is 2swap        ( x x x x --> x x x x )
+[ rot dip rot ]               is 2swap        ( x x x x --> x x x x )
 
-  [ dip [ dip 2dup ] 2swap ]    is 2over    ( x x x x --> x x x x x x )
+[ dip [ dip 2dup ] 2swap ]    is 2over    ( x x x x --> x x x x x x )
 
-  [ stack ]                     is depth        (         --> s       )
-  protect depth
+[ stack ]                     is depth        (         --> s       )
+protect depth
 
-  [ depth share
-    0 != while
-    -1 depth tally
-    ]this[ do
-    1 depth tally ]             is decurse      (         -->         )
+[ depth share
+  0 != while
+  -1 depth tally
+  ]this[ do
+  1 depth tally ]             is decurse      (         -->         )
 
-  [ dup 0 < if negate ]         is abs          (       n --> n       )
+[ dup 0 < if negate ]         is abs          (       n --> n       )
 
-  [ stack ]                     is times.start  (         --> s       )
-  protect times.start
+[ stack ]                     is times.start  (         --> s       )
+protect times.start
 
-  [ stack ]                     is times.count  (         --> s       )
-  protect times.count
+[ stack ]                     is times.count  (         --> s       )
+protect times.count
 
-  [ stack ]                     is times.action (         --> s       )
-  protect times.action
+[ stack ]                     is times.action (         --> s       )
+protect times.action
 
-  [ ]'[ times.action put
-    dup times.start put
-    [ 1 - dup -1 > while
-      times.count put
-      times.action share do
-      times.count take again ]
+[ ]'[ times.action put
+  dup times.start put
+  [ 1 - dup -1 > while
+    times.count put
+    times.action share do
+    times.count take again ]
+  drop
+  times.action release
+  times.start release ]       is times        (       n -->         )
+
+[ times.count share ]         is i            (         --> n       )
+
+[ times.start share i 1+ - ]  is i^           (         --> n       )
+
+[ 0 times.count replace ]     is conclude     (         -->         )
+
+[ times.start share
+  times.count replace ]       is refresh      (         -->         )
+
+[ times.count take 1+
+  swap - times.count put ]    is step         (         --> s       )
+
+[ stack ]                     is temp         (         --> s       )
+protect temp
+
+[ immovable
+  dup -1 > +
+  ]this[ swap peek
+  ]done[ ]                    is table        (       n --> x       )
+
+[ [] unrot
+  dup 1 < iff 2drop done
+  [ 2 /mod over while
+    if [ dip [ tuck join swap ] ]
+    dip [ dup join ]
+    again ] 2drop join ]      is of           (     x n --> [       )
+
+[ split 1 split
+  swap dip join
+  0 peek ]                    is pluck        (     [ n --> [ x     )
+
+[ split
+  rot nested
+  swap join join ]            is stuff        (   x [ n --> [       )
+
+[ 0 pluck ]                   is behead       (       [ --> [ x     )
+
+[ over size over size
+  dup temp put
+  swap - 1+ times
+    [ 2dup over size split
+      drop = if
+        [ i^ temp replace
+          conclude ]
+      behead drop ]
+  2drop temp take ]            is findseq     (     [ [ --> n       )
+
+[ 13 ]                        is carriage     (         --> c       )
+
+[ carriage emit ]             is cr           (         -->         )
+
+[ 32 ]                        is space        (         --> c       )
+
+[ space emit ]                is sp           (         -->         )
+
+[ dup char a char { within
+  if [ 32 - ] ]               is upper        (       c --> c       )
+
+[ dup char A char [ within
+  if [ 32 + ] ]               is lower        (       c --> c       )
+
+[ dup 10 <
+  iff 48 else 55 + ]          is digit        (       n --> c       )
+
+[ stack 10 ]                  is base         (         --> s       )
+protect base
+
+[ 10 base put ]               is decimal      (         -->         )
+
+[ $ '' over abs
+  [ base share /mod digit
+    rot join swap
+    dup 0 = until ]
     drop
-    times.action release
-    times.start release ]       is times        (       n -->         )
+    swap 0 < if
+      [ $ '-' swap join ] ]   is number$      (       n --> $       )
 
-  [ times.count share ]         is i            (         --> n       )
+[ stack ]                     is with.hold    (         --> s       )
+protect with.hold
+
+[ nested
+  ' [ dup with.hold put
+      size times ]
+  ' [ with.hold share
+      i ~ peek ]
+  rot join
+  nested join
+  ' [ with.hold release ]
+  join ]                      is makewith     (      x  --> [       )
 
-  [ times.start share i 1+ - ]  is i^           (         --> n       )
-
-  [ 0 times.count replace ]     is conclude     (         -->         )
-
-  [ times.start share
-    times.count replace ]       is refresh      (         -->         )
-
-  [ times.count take 1+
-    swap - times.count put ]    is step         (         --> s       )
-
-  [ stack ]                     is temp         (         --> s       )
-  protect temp
-
-  [ immovable
-    dup -1 > +
-    ]this[ swap peek
-    ]done[ ]                    is table        (       n --> x       )
-
-  [ [] unrot
-    dup 1 < iff 2drop done
-    [ 2 /mod over while
-      if [ dip [ tuck join swap ] ]
-      dip [ dup join ]
-      again ] 2drop join ]      is of           (     x n --> [       )
-
-  [ split 1 split
-    swap dip join
-    0 peek ]                    is pluck        (     [ n --> [ x     )
-
-  [ split
-    rot nested
-    swap join join ]            is stuff        (   x [ n --> [       )
-
-  [ 0 pluck ]                   is behead       (       [ --> [ x     )
-
-  [ over size over size
-    dup temp put
-    swap - 1+ times
-      [ 2dup over size split
-        drop = if
-          [ i^ temp replace
-            conclude ]
-        behead drop ]
-    2drop temp take ]            is findseq     (     [ [ --> n       )
-
-  [ 13 ]                        is carriage     (         --> c       )
-
-  [ carriage emit ]             is cr           (         -->         )
-
-  [ 32 ]                        is space        (         --> c       )
-
-  [ space emit ]                is sp           (         -->         )
-
-  [ dup char a char { within
-    if [ 32 - ] ]               is upper        (       c --> c       )
-
-  [ dup char A char [ within
-    if [ 32 + ] ]               is lower        (       c --> c       )
-
-  [ dup 10 <
-    iff 48 else 55 + ]          is digit        (       n --> c       )
-
-  [ stack 10 ]                  is base         (         --> s       )
-  protect base
-
-  [ 10 base put ]               is decimal      (         -->         )
-
-  [ $ '' over abs
-    [ base share /mod digit
-      rot join swap
-      dup 0 = until ]
-      drop
-      swap 0 < if
-        [ $ '-' swap join ] ]   is number$      (       n --> $       )
-
-  [ stack ]                     is with.hold    (         --> s       )
-  protect with.hold
-
-  [ nested
-    ' [ dup with.hold put
-        size times ]
-    ' [ with.hold share
-        i ~ peek ]
-    rot join
-    nested join
-    ' [ with.hold release ]
-    join ]                      is makewith     (      x  --> [       )
-
-  [ ]'[ makewith do ]           is witheach     (       [ -->         )
-
-  [ witheach emit ]             is echo$        (       $ -->         )
-
-  [ stack ]                     is mi.tidyup    (         --> s       )
-  protect mi.tidyup
-
-  [ stack ]                     is mi.result    (         --> s       )
-  protect mi.result
-
-  [ mi.tidyup put
-    over size mi.result put
-    nested
-    ' [ if
-        [ i^ mi.result replace
-          conclude ] ]
-    join makewith do
-    mi.tidyup take do
-    mi.result take ]            is matchitem    (   [ x x --> n       )
-
-  [ ]'[ ]'[ matchitem ]         is findwith     (   [     --> n       )
-
-  [ size < ]                    is found        (     n [ --> b       )
-
-  [ space > ]                   is printable    (       c --> b       )
-
-  [ dup findwith
-      printable [ ]
-    split nip ]                 is trim         (       $ --> $       )
-
-  [ dup findwith
-      [ printable not ] [ ]
-    split swap ]                is nextword     (       $ --> $ $     )
-
-  [ dup nest? if
-      [ dup size 2 < if done
-        dup size 2 / split
-        recurse swap
-        recurse join ] ]        is reverse      (       x --> x       )
-
-  [ [] swap times
-      [ swap nested join ]
-    reverse ]                   is pack         (     * n --> [       )
-
-  [ witheach [ ] ]              is unpack       (       [ --> *       )
-
-  [ stack ]                     is to-do        (         --> s       )
-  protect to-do
-
-  [ ' done swap put ]           is new-do       (      s -->          )
-
-  [ dip [ 1+ pack ] put ]       is add-to       (   * x n s -->       )
-
-  [ [ dup take
-      unpack do again ] drop ]  is now-do       (       s -->         )
-
-  [ 1 split reverse join
-    now-do ]                    is do-now       (       s -->         )
-
-  [ [ dup take ' done = until ]
-    drop ]                      is not-do       (       s -->         )
-
-  [ stack ]                     is sort.test    (         --> s       )
-  protect sort.test
-
-  [ ]'[ sort.test put
-    [] swap witheach
-      [ swap 2dup findwith
-        [ over sort.test share
-          do ] [ ]
-        nip stuff ]
-    sort.test release ]         is sortwith     (       [ --> [       )
-
-  [ sortwith > ]                is sort         (       [ --> [       )
-
-  [ 32 127 clamp 32 -
-    [ table
-       0 86 88 93 94 90 92 87 63 64 75 73 82 74 81 76
-       1  2  3  4  5  6  7  8  9 10 83 84 69 72 70 85
-      91 11 13 15 17 19 21 23 25 27 29 31 33 35 37 39
-      41 43 45 47 49 51 53 55 57 59 61 65 78 66 77 80
-      89 12 14 16 18 20 22 24 26 28 30 32 34 36 38 40
-      42 44 46 48 50 52 54 56 58 60 62 67 79 68 71  0 ]
-  ]                             is qacsfot      (       c --> n       )
-
-  [ [ dup  $ '' = iff false done
-      over $ '' = iff true done
-      behead rot behead rot
-      2dup = iff [ 2drop swap ] again
-      qacsfot swap qacsfot > ]
-    unrot 2drop ]               is $<           (     $ $ --> b       )
-
-  [ swap $< ]                   is $>           (     $ $ --> b       )
-
-  [ sortwith $> ]               is sort$        (       [ --> [       )
-
-  [ upper 47 - 0 44 clamp
-    [ table
-      -1  0  1  2  3  4  5  6  7  8  9 -1 -1 -1 -1
-      -1 -1 -1 10 11 12 13 14 15 16 17 18 19 20 21
-      22 23 24 25 26 27 28 29 30 31 32 33 34 35 -1 ]
-    dup 0 base share
-    within not if [ drop -1 ] ] is char->n      (       c --> n       )
-
-  [ dup $ '' = iff [ drop 0 false ] done
-    dup 0 peek char - =
-    tuck if [ behead drop ]
-    dup $ '' = iff [ 2drop 0 false ] done
-    true 0 rot witheach
-      [ char->n
-        dup 0 < iff [ drop nip false swap ]
-        else [ swap base share * + ] ]
-    rot if negate
-    swap ]                      is $->n         (       $ --> n b     )
-
-  (    adapted from 'A small noncryptographic PRNG' by Bob Jenkins    )
-  (          https://burtleburtle.net/bob/rand/smallprng.html         )
-
-  [ hex FFFFFFFFFFFFFFFF ]      is 64bitmask    (         --> f       )
-
-  [ 64bitmask & ]               is 64bits       (       f --> f       )
-
-  [ dip 64bits 2dup << 64bits
-    unrot 64 swap - >> | ]      is rot64        (     f n --> f       )
-
-  [ stack 0 ]                   is prng.a       (         --> s       )
-  [ stack 0 ]                   is prng.b       (         --> s       )
-  [ stack 0 ]                   is prng.c       (         --> s       )
-  [ stack 0 ]                   is prng.d       (         --> s       )
-
-  [ prng.a share
-    prng.b share tuck
-    7 rot64 - 64bits swap
-    prng.c share tuck
-    13 rot64 ^ prng.a replace
-    prng.d share tuck
-    37 rot64 + 64bits prng.b replace
-    over + 64bits prng.c replace
-    prng.a share + 64bits
-    dup prng.d replace ]        is prng         (         --> n       )
-
-  [ hex F1EA5EAD prng.a replace
-    dup prng.b replace
-    dup prng.c replace
-    prng.d replace
-    20 times [ prng drop ] ]    is initrandom   (       n -->         )
-
-  hex DEFACEABADFACADE initrandom
-
-  [ time initrandom ]           is randomise    (         -->         )
-
-  [ 64bitmask 1+
-    over / over *
-    [ prng 2dup > not while
-      drop again ]
-      nip swap mod ]            is random       (       n --> n       )
-
-  [ [] swap dup size times
-    [ dup size random pluck
-      nested rot join swap ]
-    drop ]                      is shuffle      (       [ --> [       )
-
-  [ stack ]                     is history      (         --> s       )
-
-  [ protected share history put
-    protected share 0
-    [ over size over
-      > while
-      2dup peek
-      size unrot
-      1+ again ]
-    2drop
-    protected share size pack
-    history put
-    pack dup history put unpack
-    stacksize history put
-    nestdepth history put
-    false history put ]         is backup       (       n -->         )
-
-  [ history release
-    nestdepth
-    history take
-    - ]bailby[
-    true history put ]          is bail         (         -->         )
-
-  [ history take iff
-      [ stacksize
-        history take
+[ ]'[ makewith do ]           is witheach     (       [ -->         )
+
+[ witheach emit ]             is echo$        (       $ -->         )
+
+[ stack ]                     is mi.tidyup    (         --> s       )
+protect mi.tidyup
+
+[ stack ]                     is mi.result    (         --> s       )
+protect mi.result
+
+[ mi.tidyup put
+  over size mi.result put
+  nested
+  ' [ if
+      [ i^ mi.result replace
+        conclude ] ]
+  join makewith do
+  mi.tidyup take do
+  mi.result take ]            is matchitem    (   [ x x --> n       )
+
+[ ]'[ ]'[ matchitem ]         is findwith     (   [     --> n       )
+
+[ size < ]                    is found        (     n [ --> b       )
+
+[ space > ]                   is printable    (       c --> b       )
+
+[ dup findwith
+    printable [ ]
+  split nip ]                 is trim         (       $ --> $       )
+
+[ dup findwith
+    [ printable not ] [ ]
+  split swap ]                is nextword     (       $ --> $ $     )
+
+[ dup nest? if
+    [ dup size 2 < if done
+      dup size 2 / split
+      recurse swap
+      recurse join ] ]        is reverse      (       x --> x       )
+
+[ [] swap times
+    [ swap nested join ]
+  reverse ]                   is pack         (     * n --> [       )
+
+[ witheach [ ] ]              is unpack       (       [ --> *       )
+
+[ stack ]                     is to-do        (         --> s       )
+protect to-do
+
+[ ' done swap put ]           is new-do       (      s -->          )
+
+[ dip [ 1+ pack ] put ]       is add-to       (   * x n s -->       )
+
+[ [ dup take
+    unpack do again ] drop ]  is now-do       (       s -->         )
+
+[ 1 split reverse join
+  now-do ]                    is do-now       (       s -->         )
+
+[ [ dup take ' done = until ]
+  drop ]                      is not-do       (       s -->         )
+
+[ stack ]                     is sort.test    (         --> s       )
+protect sort.test
+
+[ ]'[ sort.test put
+  [] swap witheach
+    [ swap 2dup findwith
+      [ over sort.test share
+        do ] [ ]
+      nip stuff ]
+  sort.test release ]         is sortwith     (       [ --> [       )
+
+[ sortwith > ]                is sort         (       [ --> [       )
+
+[ 32 127 clamp 32 -
+  [ table
+     0 86 88 93 94 90 92 87 63 64 75 73 82 74 81 76
+     1  2  3  4  5  6  7  8  9 10 83 84 69 72 70 85
+    91 11 13 15 17 19 21 23 25 27 29 31 33 35 37 39
+    41 43 45 47 49 51 53 55 57 59 61 65 78 66 77 80
+    89 12 14 16 18 20 22 24 26 28 30 32 34 36 38 40
+    42 44 46 48 50 52 54 56 58 60 62 67 79 68 71  0 ]
+]                             is qacsfot      (       c --> n       )
+
+[ [ dup  $ '' = iff false done
+    over $ '' = iff true done
+    behead rot behead rot
+    2dup = iff [ 2drop swap ] again
+    qacsfot swap qacsfot > ]
+  unrot 2drop ]               is $<           (     $ $ --> b       )
+
+[ swap $< ]                   is $>           (     $ $ --> b       )
+
+[ sortwith $> ]               is sort$        (       [ --> [       )
+
+[ upper 47 - 0 44 clamp
+  [ table
+    -1  0  1  2  3  4  5  6  7  8  9 -1 -1 -1 -1
+    -1 -1 -1 10 11 12 13 14 15 16 17 18 19 20 21
+    22 23 24 25 26 27 28 29 30 31 32 33 34 35 -1 ]
+  dup 0 base share
+  within not if [ drop -1 ] ] is char->n      (       c --> n       )
+
+[ dup $ '' = iff [ drop 0 false ] done
+  dup 0 peek char - =
+  tuck if [ behead drop ]
+  dup $ '' = iff [ 2drop 0 false ] done
+  true 0 rot witheach
+    [ char->n
+      dup 0 < iff [ drop nip false swap ]
+      else [ swap base share * + ] ]
+  rot if negate
+  swap ]                      is $->n         (       $ --> n b     )
+
+(    adapted from 'A small noncryptographic PRNG' by Bob Jenkins    )
+(          https://burtleburtle.net/bob/rand/smallprng.html         )
+
+[ hex FFFFFFFFFFFFFFFF ]      is 64bitmask    (         --> f       )
+
+[ 64bitmask & ]               is 64bits       (       f --> f       )
+
+[ dip 64bits 2dup << 64bits
+  unrot 64 swap - >> | ]      is rot64        (     f n --> f       )
+
+[ stack 0 ]                   is prng.a       (         --> s       )
+[ stack 0 ]                   is prng.b       (         --> s       )
+[ stack 0 ]                   is prng.c       (         --> s       )
+[ stack 0 ]                   is prng.d       (         --> s       )
+
+[ prng.a share
+  prng.b share tuck
+  7 rot64 - 64bits swap
+  prng.c share tuck
+  13 rot64 ^ prng.a replace
+  prng.d share tuck
+  37 rot64 + 64bits prng.b replace
+  over + 64bits prng.c replace
+  prng.a share + 64bits
+  dup prng.d replace ]        is prng         (         --> n       )
+
+[ hex F1EA5EAD prng.a replace
+  dup prng.b replace
+  dup prng.c replace
+  prng.d replace
+  20 times [ prng drop ] ]    is initrandom   (       n -->         )
+
+hex DEFACEABADFACADE initrandom
+
+[ time initrandom ]           is randomise    (         -->         )
+
+[ 64bitmask 1+
+  over / over *
+  [ prng 2dup > not while
+    drop again ]
+    nip swap mod ]            is random       (       n --> n       )
+
+[ [] swap dup size times
+  [ dup size random pluck
+    nested rot join swap ]
+  drop ]                      is shuffle      (       [ --> [       )
+
+[ stack ]                     is history      (         --> s       )
+
+[ protected share history put
+  protected share 0
+  [ over size over
+    > while
+    2dup peek
+    size unrot
+    1+ again ]
+  2drop
+  protected share size pack
+  history put
+  pack dup history put unpack
+  stacksize history put
+  nestdepth history put
+  false history put ]         is backup       (       n -->         )
+
+[ history release
+  nestdepth
+  history take
+  - ]bailby[
+  true history put ]          is bail         (         -->         )
+
+[ history take iff
+    [ stacksize
+      history take
+      history share
+      size - - times drop
+      history take unpack
+      history take unpack
+      history share size
+      [ dup 0 > while
+        1 -
         history share
-        size - - times drop
-        history take unpack
-        history take unpack
-        history share size
+        over peek
+        rot over size
+        swap -
         [ dup 0 > while
-          1 -
-          history share
-          over peek
-          rot over size
-          swap -
-          [ dup 0 > while
-            over release
-            1 - again ]
-          2drop again ]
+          over release
+          1 - again ]
+        2drop again ]
+      drop
+      history take
+      protected replace
+      true ]
+    else
+      [ 5 times
+        [ history release ]
+        false ] ]             is bailed       (         --> b       )
+
+[ quid swap quid = ]          is oats         (     x x --> b       )
+
+[ [] swap
+  [ trim
+    dup size while
+    nextword nested
+    swap dip join again ]
+  drop ]                      is nest$        (       $ --> [       )
+
+[ stack ]                     is namenest     (         --> s       )
+
+[ namenest share ]            is names        (         --> [       )
+
+[ names find names found ]    is name?        (       $ --> b       )
+
+                      forward is actions      (       n --> x       )
+
+[ ' actions ]                 is actiontable  (         --> x       )
+
+[ actiontable share tuck
+  findwith [ over oats ] drop
+  swap found ]                is named?       (         x --> b     )
+
+                      forward is reflect      (         x --> x     )
+[ dup nest? if
+    [ dup [] = if done
+      dup size 1 = iff
+        [ 0 peek
+          dup named? iff
+            nested done
+          reflect nested ]
+        done
+      dup size 2 / split
+      recurse swap
+      recurse join ] ]  resolves reflect      (       x --> x       )
+
+[ stack ]                     is buildernest  (         --> s       )
+
+[ buildernest share ]         is builders     (         --> s       )
+
+[ builders find
+  builders found ]            is builder?     (       $ --> b       )
+
+                      forward is jobs         (       n --> x       )
+
+[ ' jobs ]                    is jobtable     (         --> [       )
+
+[ stack ]                     is message      (         --> s       )
+
+[ stack ]                     is b.nesting    (         --> s       )
+protect b.nesting
+
+[ stack ]                     is b.to-do      (         --> s       )
+
+[ $ '[' b.nesting put
+  [] swap ]                   is b.[          (     [ $ --> [ [ $   )
+
+[ b.nesting take dup
+  $ '' = if
+    [ $ 'Unexpected "]".'
+      message put
+      bail ]
+  dup $ '[' = iff drop
+  else
+    [ $ 'Nest mismatch: '
+      swap join $ ' ]' join
+      message put
+      bail ]
+  dip [ nested join ] ]       is b.]          (   [ [ $ --> [ $     )
+
+[ over [] = if
+    [ $ '"is" needs something to name before it.'
+      message put
+      bail ]
+  dup $ '' = if
+    [ $ '"is" needs a name after it.'
+      message put
+      bail ]
+  nextword nested
+  namenest take
+  join
+  namenest put
+  dip
+    [ -1 pluck
+      actiontable take
+      1 stuff
+      actiontable put ] ]     is b.is         (     [ $ --> [ $     )
+
+[ over [] = if
+    [ $ '"builds" needs something to name before it.'
+      message put
+      bail ]
+  dup $ '' = if
+    [ $ '"builds" needs a name after it.'
+      message put
+      bail ]
+  nextword nested
+  buildernest take
+  join
+  buildernest put
+  dip
+    [ -1 pluck
+      jobtable take
+      1 stuff
+      jobtable put ] ]        is b.builds     (     [ $ --> [ $     )
+
+[ trim nextword
+  dup $ '' = if
+    [ $ 'Unfinished comment.'
+      message put
+      bail ]
+  $ ')' = until ]             is b.(          (     [ $ --> $ [     )
+
+[ $ 'Unexpected ")".'
+  message put
+  bail ]                      is b.)          (     [ $ --> $ [     )
+
+[ $ 'Unresolved reference.'
+  fail  ]                     is unresolved   (         -->         )
+
+[ dip
+    [ ' [ unresolved ]
+      copy nested join ] ]    is b.forward    (     [ $ --> [ $     )
+
+ [ over [] = if
+    [ $ '"resolves" needs something to resolve.'
+      message put
+      bail ]
+  dup $ '' = if
+    [ $ '"resolves" needs a name to resolve into.'
+      message put
+      bail ]
+   dip [ -1 split ]
+   nextword dup temp put
+   names find
+   dup names found not if
+     [ $ 'Unknown word after "resolves": '
+       temp take join
+       message put
+       bail ]
+   actions
+   dup ' [ unresolved ] = not if
+     [ char " temp take join
+       $ '" is not an unresolved forward reference.'
+       join
+       message put
+       bail ]
+   rot 0 peek over
+   replace
+   ' unresolved swap
+   ' replace 2 b.to-do add-to
+   temp release ]             is b.resolves   (     [ $ --> [ $     )
+
+[ 1 split
+  over $ '' = if
+    [ $ '"char" needs a character after it.'
+      message put
+      bail ]
+  dip join ]                  is b.char       (     [ $ --> [ $     )
+
+[ dup $ '' = if
+    [ $ '"$" needs to be followed by a string.'
+      message put
+      bail ]
+  behead over find
+  2dup swap found not if
+    [ $ 'Endless string discovered.'
+      message put
+      bail ]
+  split behead drop
+  ' ' nested
+  rot nested join
+  nested swap dip join ]      is b.$          (     [ $ --> [ $     )
+
+[ dup $ '' = if
+    [ $ '"say" needs to be followed by a string.'
+      message put
+      bail ]
+  $ '$' builders find jobs do
+  dip
+    [ -1 pluck
+      '  echo$ nested join
+      nested join ] ]         is b.say        (     [ $ --> [ $     )
+
+[ 16 base put
+  nextword dup
+  $ '' = if
+    [ $ '"hex" needs a number after it.'
+      message put
+      bail ]
+  dup $->n iff
+    [ nip swap dip join ]
+  else
+    [ drop
+      char " swap join
+      $ '" is not hexadecimal.'
+      join message put
+      bail ]
+  base release ]              is b.hex        (     [ $ --> [ $     )
+
+[ dip [ -1 split ] swap do ]  is b.now!       (     [ $ --> [ $     )
+
+[ over [] = if
+    [ $ '"constant" needs something before it.'
+      message put
+      bail ]
+  dip
+    [ -1 pluck do
+    dup number? not if
+      [ ' ' nested swap
+        nested join
+        nested ]
+    join ] ]                  is b.constant   (     [ $ --> [ $     )
+
+[ ' [ namenest actiontable
+      buildernest jobtable ]
+  witheach
+    [ do share copy
+      history put ] ]         is backupwords  (         -->         )
+
+[ ' [ jobtable buildernest
+      actiontable namenest ]
+  witheach
+    [ do dup release
+      history swap move ] ]   is restorewords (         -->         )
+
+[ 4 times
+  [ history release ] ]       is releasewords (         -->         )
+
+[ backupwords
+  b.to-do new-do
+  1 backup
+    [ $ '' b.nesting put
+      decimal
+      [] swap
+      [ trim
+        dup $ '' = iff drop done
+        nextword
+        dup builders find
+        dup builders found iff
+          [ dip [ drop trim ]
+            jobs do ] again
         drop
-        history take
-        protected replace
-        true ]
+        dup names find
+        dup names found iff
+          [ actions nested
+            nip swap dip join ] again
+        drop
+        dup $->n iff
+          [ nip swap dip join ] again
+        drop
+        $ 'Unknown word: '
+        swap join message put
+        bail ]
+      base release
+      b.nesting take dup
+      $ '' = iff drop
       else
-        [ 5 times
-          [ history release ]
-          false ] ]             is bailed       (         --> b       )
-
-  [ quid swap quid = ]          is oats         (     x x --> b       )
-
-  [ [] swap
-    [ trim
-      dup size while
-      nextword nested
-      swap dip join again ]
-    drop ]                      is nest$        (       $ --> [       )
-
-  [ stack ]                     is namenest     (         --> s       )
-
-  [ namenest share ]            is names        (         --> [       )
-
-  [ names find names found ]    is name?        (       $ --> b       )
-
-                        forward is actions      (       n --> x       )
-
-  [ ' actions ]                 is actiontable  (         --> x       )
-
-  [ actiontable share tuck
-    findwith [ over oats ] drop
-    swap found ]                is named?       (         x --> b     )
-
-                        forward is reflect      (         x --> x     )
-  [ dup nest? if
-      [ dup [] = if done
-        dup size 1 = iff
-          [ 0 peek
-            dup named? iff
-              nested done
-            reflect nested ]
-          done
-        dup size 2 / split
-        recurse swap
-        recurse join ] ]  resolves reflect      (       x --> x       )
-
-  [ stack ]                     is buildernest  (         --> s       )
-
-  [ buildernest share ]         is builders     (         --> s       )
-
-  [ builders find
-    builders found ]            is builder?     (       $ --> b       )
-
-                        forward is jobs         (       n --> x       )
-
-  [ ' jobs ]                    is jobtable     (         --> [       )
-
-  [ stack ]                     is message      (         --> s       )
-
-  [ stack ]                     is b.nesting    (         --> s       )
-  protect b.nesting
-
-  [ stack ]                     is b.to-do      (         --> s       )
-
-  [ $ '[' b.nesting put
-    [] swap ]                   is b.[          (     [ $ --> [ [ $   )
-
-  [ b.nesting take dup
-    $ '' = if
-      [ $ 'Unexpected "]".'
-        message put
-        bail ]
-    dup $ '[' = iff drop
-    else
-      [ $ 'Nest mismatch: '
-        swap join $ ' ]' join
-        message put
-        bail ]
-    dip [ nested join ] ]       is b.]          (   [ [ $ --> [ $     )
-
-  [ over [] = if
-      [ $ '"is" needs something to name before it.'
-        message put
-        bail ]
-    dup $ '' = if
-      [ $ '"is" needs a name after it.'
-        message put
-        bail ]
-    nextword nested
-    namenest take
-    join
-    namenest put
-    dip
-      [ -1 pluck
-        actiontable take
-        1 stuff
-        actiontable put ] ]     is b.is         (     [ $ --> [ $     )
-
-  [ over [] = if
-      [ $ '"builds" needs something to name before it.'
-        message put
-        bail ]
-    dup $ '' = if
-      [ $ '"builds" needs a name after it.'
-        message put
-        bail ]
-    nextword nested
-    buildernest take
-    join
-    buildernest put
-    dip
-      [ -1 pluck
-        jobtable take
-        1 stuff
-        jobtable put ] ]        is b.builds     (     [ $ --> [ $     )
-
-  [ trim nextword
-    dup $ '' = if
-      [ $ 'Unfinished comment.'
-        message put
-        bail ]
-    $ ')' = until ]             is b.(          (     [ $ --> $ [     )
-
-  [ $ 'Unexpected ")".'
-    message put
-    bail ]                      is b.)          (     [ $ --> $ [     )
-
-  [ $ 'Unresolved reference.'
-    fail  ]                     is unresolved   (         -->         )
-
-  [ dip
-      [ ' [ unresolved ]
-        copy nested join ] ]    is b.forward    (     [ $ --> [ $     )
-
-   [ over [] = if
-      [ $ '"resolves" needs something to resolve.'
-        message put
-        bail ]
-    dup $ '' = if
-      [ $ '"resolves" needs a name to resolve into.'
-        message put
-        bail ]
-     dip [ -1 split ]
-     nextword dup temp put
-     names find
-     dup names found not if
-       [ $ 'Unknown word after "resolves": '
-         temp take join
-         message put
-         bail ]
-     actions
-     dup ' [ unresolved ] = not if
-       [ char " temp take join
-         $ '" is not an unresolved forward reference.'
-         join
-         message put
-         bail ]
-     rot 0 peek over
-     replace
-     ' unresolved swap
-     ' replace 2 b.to-do add-to
-     temp release ]             is b.resolves   (     [ $ --> [ $     )
-
-  [ 1 split
-    over $ '' = if
-      [ $ '"char" needs a character after it.'
-        message put
-        bail ]
-    dip join ]                  is b.char       (     [ $ --> [ $     )
-
-  [ dup $ '' = if
-      [ $ '"$" needs to be followed by a string.'
-        message put
-        bail ]
-    behead over find
-    2dup swap found not if
-      [ $ 'Endless string discovered.'
-        message put
-        bail ]
-    split behead drop
-    ' ' nested
-    rot nested join
-    nested swap dip join ]      is b.$          (     [ $ --> [ $     )
-
-  [ dup $ '' = if
-      [ $ '"say" needs to be followed by a string.'
-        message put
-        bail ]
-    $ '$' builders find jobs do
-    dip
-      [ -1 pluck
-        '  echo$ nested join
-        nested join ] ]         is b.say        (     [ $ --> [ $     )
-
-  [ 16 base put
-    nextword dup
-    $ '' = if
-      [ $ '"hex" needs a number after it.'
-        message put
-        bail ]
-    dup $->n iff
-      [ nip swap dip join ]
-    else
-      [ drop
-        char " swap join
-        $ '" is not hexadecimal.'
-        join message put
-        bail ]
-    base release ]              is b.hex        (     [ $ --> [ $     )
-
-  [ dip [ -1 split ] swap do ]  is b.now!       (     [ $ --> [ $     )
-
-  [ over [] = if
-      [ $ '"constant" needs something before it.'
-        message put
-        bail ]
-    dip
-      [ -1 pluck do
-      dup number? not if
-        [ ' ' nested swap
-          nested join
-          nested ]
-      join ] ]                  is b.constant   (     [ $ --> [ $     )
-
-  [ ' [ namenest actiontable
-        buildernest jobtable ]
-    witheach
-      [ do share copy
-        history put ] ]         is backupwords  (         -->         )
-
-  [ ' [ jobtable buildernest
-        actiontable namenest ]
-    witheach
-      [ do dup release
-        history swap move ] ]   is restorewords (         -->         )
-
-  [ 4 times
-    [ history release ] ]       is releasewords (         -->         )
-
-  [ backupwords
-    b.to-do new-do
-    1 backup
-      [ $ '' b.nesting put
-        decimal
-        [] swap
-        [ trim
-          dup $ '' = iff drop done
-          nextword
-          dup builders find
-          dup builders found iff
-            [ dip [ drop trim ]
-              jobs do ] again
-          drop
-          dup names find
-          dup names found iff
-            [ actions nested
-              nip swap dip join ] again
-          drop
-          dup $->n iff
-            [ nip swap dip join ] again
-          drop
-          $ 'Unknown word: '
+        [ $ 'Unfinished nest: '
           swap join message put
-          bail ]
-        base release
-        b.nesting take dup
-        $ '' = iff drop
+          bail ] ]
+  bailed iff
+    [ drop b.to-do now-do
+      restorewords
+      ' ' nested
+      message take nested join
+      ' echo$ nested join ]
+  else
+    [ b.to-do not-do
+      releasewords ] ]        is build        (       $ --> [       )
+
+[ build do ]                  is quackery     (       $ -->         )
+
+[ stack -1 ]                  is nesting      (         --> [       )
+
+                      forward is unbuild      (       x --> $       )
+
+[ nesting share
+  0 = iff [ drop $ '...' ] done
+  $ '' swap
+  dup number? iff
+    [ number$ join ] done
+  actiontable share
+  behead drop
+  [ dup [] = iff
+      [ drop false ] done
+    behead
+    rot tuck oats iff
+      [ drop size 2 +
+        actiontable share
+        size swap -
+        names swap peek join
+      true ] done
+    swap again ]
+  if done
+  dup nest? iff
+    [ $ '[ ' rot join swap
+      [ dup [] = iff drop done
+        behead
+        -1 nesting tally
+        unbuild
+        1 nesting tally
+        space join
+        swap dip join again ]
+    $ ']' join ]
+  else
+     [ drop
+       $ "Quackery was worried by a python."
+       fail ] ]         resolves unbuild      (       x --> $       )
+
+[ unbuild echo$ ]             is echo         (       x -->         )
+
+[ $ ''
+  return -2 split drop
+  witheach
+    [ dup number? iff
+      [ number$ join
+        $ '} ' join ]
+    else
+      [ $ '{' swap dip join
+        actiontable share
+        findwith
+          [ over oats ] drop
+        dup actiontable share
+        found iff
+          [ 1 - names swap
+            peek join
+            space join ]
         else
-          [ $ 'Unfinished nest: '
-            swap join message put
-            bail ] ]
-    bailed iff
-      [ drop b.to-do now-do
-        restorewords
-        ' ' nested
-        message take nested join
-        ' echo$ nested join ]
-    else
-      [ b.to-do not-do
-        releasewords ] ]        is build        (       $ --> [       )
+          [ drop $ '[...] '
+            join ] ] ]
+  -1 split drop ]             is return$      (         --> $       )
 
-  [ build do ]                  is quackery     (       $ -->         )
+[ return$ echo$ ]             is echoreturn   (         -->         )
 
-  [ stack -1 ]                  is nesting      (         --> [       )
+[ stacksize dup 0 = iff
+    [ $ 'Stack empty.' echo$ drop ]
+  else
+    [ $ 'Stack: ' echo$
+      pack dup
+      witheach [ echo sp ]
+      unpack ]
+  cr ]                        is echostack    (         -->         )
 
-                        forward is unbuild      (       x --> $       )
+[ cr $ '' $ '/O> '
+  [ input
+    dup $ '' != while
+    carriage join join
+    $ '... ' again ]
+  drop
+  quackery
+  5 nesting put
+  cr echostack
+  nesting release again ]     is shell        (         -->         )
 
-  [ nesting share
-    0 = iff [ drop $ '...' ] done
-    $ '' swap
-    dup number? iff
-      [ number$ join ] done
-    actiontable share
-    behead drop
-    [ dup [] = iff
-        [ drop false ] done
-      behead
-      rot tuck oats iff
-        [ drop size 2 +
-          actiontable share
-          size swap -
-          names swap peek join
-        true ] done
-      swap again ]
-    if done
-    dup nest? iff
-      [ $ '[ ' rot join swap
-        [ dup [] = iff drop done
-          behead
-          -1 nesting tally
-          unbuild
-          1 nesting tally
-          space join
-          swap dip join again ]
-      $ ']' join ]
-    else
-       [ drop
-         $ "Quackery was worried by a python."
-         fail ] ]         resolves unbuild      (       x --> $       )
-
-  [ unbuild echo$ ]             is echo         (       x -->         )
-
-  [ $ ''
-    return -2 split drop
-    witheach
-      [ dup number? iff
-        [ number$ join
-          $ '} ' join ]
-      else
-        [ $ '{' swap dip join
-          actiontable share
-          findwith
-            [ over oats ] drop
-          dup actiontable share
-          found iff
-            [ 1 - names swap
-              peek join
-              space join ]
-          else
-            [ drop $ '[...] '
-              join ] ] ]
-    -1 split drop ]             is return$      (         --> $       )
-
-  [ return$ echo$ ]             is echoreturn   (         -->         )
-
-  [ stacksize dup 0 = iff
-      [ $ 'Stack empty.' echo$ drop ]
-    else
-      [ $ 'Stack: ' echo$
-        pack dup
-        witheach [ echo sp ]
-        unpack ]
-    cr ]                        is echostack    (         -->         )
-
-  [ cr $ '' $ '/O> '
-    [ input
-      dup $ '' != while
-      carriage join join
-      $ '... ' again ]
-    drop
-    quackery
-    5 nesting put
-    cr echostack
-    nesting release again ]     is shell        (         -->         )
-
-  [ cr randomise 12 random
-    [ table
-      $ 'Goodbye.'  $ 'Adieu.' $ 'So long.'
-      $ 'Cheerio.'  $ 'Aloha.' $ 'Ciao.'
-      $ 'Farewell.' $ 'Be seeing you.'
-      $ 'Sayonara.' $ 'Auf wiedersehen.'
-      $ 'Toodles.'  $ 'Hasta la vista.' ]
-    do echo$ cr cr
-    3 ]bailby[ ]                is leave        (         -->         )
-
-  [ stacksize times drop ]      is empty        (     all -->         )
-
-  [ tuck temp put
-    witheach
-      [ dup size
-        rot + dup
-        temp share > iff
-          [ cr drop dup size ]
-        else sp 1+ swap echo$ ]
-    drop temp release ]         is wrap$        (     [ n -->         )
-
-  [ names reverse 70 wrap$ cr
-    builders reverse
-    70 wrap$ cr ]               is words        (         -->         )
-
-  [ dup name? iff drop
-    else
-      [ dup sharefile not if
-        [ $ |$ 'file not found: "|
-          swap join
-          $ |"' echo$| join ]
-        nip quackery ] ]        is loadfile     (       $ -->         )
-
-  [ dup sharefile iff
-      [ swap releasefile ]
-    else [ drop false ] ]       is takefile     (       $ --> $ b     )
-
-  [ dup releasefile iff
-      putfile
-    else [ 2drop false ] ]      is replacefile  (     $ $ --> b       )
-
-  [ nested ' [ ' ]
-    swap join
-    decimal unbuild
-    base release ]              is quackify     (       x --> $       )
-
-  $ "quackify replacefile takefile loadfile words empty wrap$ leave
-     shell echostack echoreturn return$ echo unbuild nesting quackery
-     build releasewords restorewords backupwords unresolved b.to-do
-     b.nesting message jobtable jobs builder? builders buildernest
-     reflect named? actiontable actions name? names namenest nest$ oats
-     bailed bail backup history shuffle random randomise initrandom
-     prng prng.d prng.c prng.b prng.a rot64 64bits 64bitmask $->n
-     char->n sort$ $> $< qacsfot sort sortwith sort.test not-do do-now
-     now-do add-to new-do to-do unpack pack reverse nextword trim
-     printable found findwith matchitem mi.result mi.tidyup echo$
-     witheach makewith with.hold number$ decimal base digit lower upper
-     sp space cr carriage findseq behead stuff pluck of table temp step
-     refresh conclude i^ i times times.action times.count times.start
-     abs decurse depth 2over 2swap dip dip.hold protect protected
-     nested move tally replace release share stack while until recurse
-     do this ' copy clamp max min else iff if done again 2drop 2dup
-     within unrot tuck bit mod nip / - < xor != or and not true false
-     sharefile releasefile putfile filepath input ding emit quid
-     operator? number? nest? size poke peek find join split [] take
-     immovable put ]bailby[ ]do[ ]this[ ]'[ ]else[ ]iff[ ]if[ ]again[
-     ]done[ over rot swap drop dup return nestdepth stacksize time ~ ^
-     | & >> << ** /mod * negate + 1+ > = nand fail python"
-
-  nest$ namenest put
-
+[ cr randomise 12 random
   [ table
-    quackify replacefile takefile loadfile words empty wrap$ leave
-    shell echostack echoreturn return$ echo unbuild nesting quackery
-    build releasewords restorewords backupwords unresolved b.to-do
-    b.nesting message jobtable jobs builder? builders buildernest
-    reflect named? actiontable actions name? names namenest nest$ oats
-    bailed bail backup history shuffle random randomise initrandom
-    prng prng.d prng.c prng.b prng.a rot64 64bits 64bitmask $->n
-    char->n sort$ $> $< qacsfot sort sortwith sort.test not-do do-now
-    now-do add-to new-do to-do unpack pack reverse nextword trim
-    printable found findwith matchitem mi.result mi.tidyup echo$
-    witheach makewith with.hold number$ decimal base digit lower upper
-    sp space cr carriage findseq behead stuff pluck of table temp step
-    refresh conclude i^ i times times.action times.count times.start
-    abs decurse depth 2over 2swap dip dip.hold protect protected
-    nested move tally replace release share stack while until recurse
-    do this ' copy clamp max min else iff if done again 2drop 2dup
-    within unrot tuck bit mod nip / - < xor != or and not true false
-    sharefile releasefile putfile filepath input ding emit quid
-    operator? number? nest? size poke peek find join split [] take
-    immovable put ]bailby[ ]do[ ]this[ ]'[ ]else[ ]iff[ ]if[ ]again[
-    ]done[ over rot swap drop dup return nestdepth stacksize time ~ ^
-    | & >> << ** /mod * negate + 1+ > = nand fail python ]
+    $ 'Goodbye.'  $ 'Adieu.' $ 'So long.'
+    $ 'Cheerio.'  $ 'Aloha.' $ 'Ciao.'
+    $ 'Farewell.' $ 'Be seeing you.'
+    $ 'Sayonara.' $ 'Auf wiedersehen.'
+    $ 'Toodles.'  $ 'Hasta la vista.' ]
+  do echo$ cr cr
+  3 ]bailby[ ]                is leave        (         -->         )
 
-                          resolves actions      (       n --> x       )
+[ stacksize times drop ]      is empty        (     all -->         )
 
-  $ "constant now! hex say $ char resolves forward ) ( builds is ] ["
-  nest$ buildernest put
+[ tuck temp put
+  witheach
+    [ dup size
+      rot + dup
+      temp share > iff
+        [ cr drop dup size ]
+      else sp 1+ swap echo$ ]
+  drop temp release ]         is wrap$        (     [ n -->         )
 
-  [ table
-    b.constant b.now! b.hex b.say b.$ b.char b.resolves
-    b.forward b.) b.( b.builds b.is b.] b.[ ]
+[ names reverse 70 wrap$ cr
+  builders reverse
+  70 wrap$ cr ]               is words        (         -->         )
 
-                          resolves jobs         (       n --> x       )
+[ dup name? iff drop
+  else
+    [ dup sharefile not if
+      [ $ |$ 'file not found: "|
+        swap join
+        $ |"' echo$| join ]
+      nip quackery ] ]        is loadfile     (       $ -->         )
+
+[ dup sharefile iff
+    [ swap releasefile ]
+  else [ drop false ] ]       is takefile     (       $ --> $ b     )
+
+[ dup releasefile iff
+    putfile
+  else [ 2drop false ] ]      is replacefile  (     $ $ --> b       )
+
+[ nested ' [ ' ]
+  swap join
+  decimal unbuild
+  base release ]              is quackify     (       x --> $       )
+
+$ "quackify replacefile takefile loadfile words empty wrap$ leave
+   shell echostack echoreturn return$ echo unbuild nesting quackery
+   build releasewords restorewords backupwords unresolved b.to-do
+   b.nesting message jobtable jobs builder? builders buildernest
+   reflect named? actiontable actions name? names namenest nest$ oats
+   bailed bail backup history shuffle random randomise initrandom
+   prng prng.d prng.c prng.b prng.a rot64 64bits 64bitmask $->n
+   char->n sort$ $> $< qacsfot sort sortwith sort.test not-do do-now
+   now-do add-to new-do to-do unpack pack reverse nextword trim
+   printable found findwith matchitem mi.result mi.tidyup echo$
+   witheach makewith with.hold number$ decimal base digit lower upper
+   sp space cr carriage findseq behead stuff pluck of table temp step
+   refresh conclude i^ i times times.action times.count times.start
+   abs decurse depth 2over 2swap dip dip.hold protect protected
+   nested move tally replace release share stack while until recurse
+   do this ' copy clamp max min else iff if done again 2drop 2dup
+   within unrot tuck bit mod nip / - < xor != or and not true false
+   sharefile releasefile putfile filepath input ding emit quid
+   operator? number? nest? size poke peek find join split [] take
+   immovable put ]bailby[ ]do[ ]this[ ]'[ ]else[ ]iff[ ]if[ ]again[
+   ]done[ over rot swap drop dup return nestdepth stacksize time ~ ^
+   | & >> << ** /mod * negate + 1+ > = nand fail python"
+
+nest$ namenest put
+
+[ table
+  quackify replacefile takefile loadfile words empty wrap$ leave
+  shell echostack echoreturn return$ echo unbuild nesting quackery
+  build releasewords restorewords backupwords unresolved b.to-do
+  b.nesting message jobtable jobs builder? builders buildernest
+  reflect named? actiontable actions name? names namenest nest$ oats
+  bailed bail backup history shuffle random randomise initrandom
+  prng prng.d prng.c prng.b prng.a rot64 64bits 64bitmask $->n
+  char->n sort$ $> $< qacsfot sort sortwith sort.test not-do do-now
+  now-do add-to new-do to-do unpack pack reverse nextword trim
+  printable found findwith matchitem mi.result mi.tidyup echo$
+  witheach makewith with.hold number$ decimal base digit lower upper
+  sp space cr carriage findseq behead stuff pluck of table temp step
+  refresh conclude i^ i times times.action times.count times.start
+  abs decurse depth 2over 2swap dip dip.hold protect protected
+  nested move tally replace release share stack while until recurse
+  do this ' copy clamp max min else iff if done again 2drop 2dup
+  within unrot tuck bit mod nip / - < xor != or and not true false
+  sharefile releasefile putfile filepath input ding emit quid
+  operator? number? nest? size poke peek find join split [] take
+  immovable put ]bailby[ ]do[ ]this[ ]'[ ]else[ ]iff[ ]if[ ]again[
+  ]done[ over rot swap drop dup return nestdepth stacksize time ~ ^
+  | & >> << ** /mod * negate + 1+ > = nand fail python ]
+
+                        resolves actions      (       n --> x       )
+
+$ "constant now! hex say $ char resolves forward ) ( builds is ] ["
+nest$ buildernest put
+
+[ table
+  b.constant b.now! b.hex b.say b.$ b.char b.resolves
+  b.forward b.) b.( b.builds b.is b.] b.[ ]
+
+                        resolves jobs         (       n --> x       )
 
                   """
 
