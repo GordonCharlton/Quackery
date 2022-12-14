@@ -39,7 +39,7 @@
   [ rot * dip * reduce ]        is v*           ( n/d n/d --> n/d     )
 
   [ over iff
-      [ 1/v v* ] done 
+      [ 1/v v* ] done
     2drop 2drop 1 0 ]           is v/           ( n/d n/d --> n/d     )
 
   [ 1 ]                         is n->v         (       n --> n/d     )
@@ -111,8 +111,11 @@
     rot do temp release ]       is round        (   n/d n --> n/d     )
 
   [ temp put v-
+    2dup overflow iff
+      [ temp release
+        2drop false ] done
     2dup v0= iff
-      [ temp release 
+      [ temp release
          2drop true ] done
     vabs proper rot iff
       [ temp release
@@ -176,9 +179,9 @@
     rot dup 0 = dip
       [ unrot 2dup v0<
         dip
-          [ vabs 
-            2dup < dup dip 
-              [ if [ 1 1 v+ ]      
+          [ vabs
+            2dup < dup dip
+              [ if [ 1 1 v+ ]
                 rot dup dip
                   [ base share
                     dup dip
@@ -186,9 +189,9 @@
                         rot * swap / ]
                     tuck 2 / + swap /
                     number$ ] ]
-            if [ char 0 rot 0 poke swap ]               
+            if [ char 0 rot 0 poke swap ]
             negate split
-            char . swap join join ] ]            
+            char . swap join join ] ]
     rot swap
     iff [ 1 split nip ]
     else [ +zero -zeroes -point ]
