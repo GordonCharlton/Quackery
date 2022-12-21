@@ -21,7 +21,8 @@ def quackery(source_string):
     def failed(message):
         traverse(build("""  stacksize pack
                             decimal unbuild
-                            base release
+                            ' base size 2 > if
+                              [ base release ]
                             return$
                             nestdepth ]bailby[  """))
         returnstack = string_from_stack()
