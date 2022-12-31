@@ -93,7 +93,9 @@ turtle.hideturtle()
 
   [ $ \
 import turtle
-turtle.clearscreen()
+turtle.clear()
+turtle.penup()
+turtle.home()
 turtle.colormode(255)
   \ python ]                        is clear     (         --> )
 
