@@ -155,18 +155,14 @@ def quackery(source_string):
             failed('Return stack unexpectedly empty.')
         return rstack.pop()
 
-    true = 1
-
-    false = 0
-
     def bool_to_stack(qbool):
-        to_stack(true if qbool else false)
+        to_stack(True if qbool else False)
 
     def nand():
         expect_number()
         a = from_stack()
         expect_number()
-        bool_to_stack(from_stack() == false or a == false)
+        bool_to_stack(from_stack() == False or a == False)
 
     def equal():
         expect_something()
@@ -438,7 +434,7 @@ def quackery(source_string):
         try:
             with open(filename, 'x'): pass
         except FileExistsError:
-            to_stack(false)
+            to_stack(False)
         except:
             raise
         else:
@@ -447,7 +443,7 @@ def quackery(source_string):
             except:
                 raise
             else:
-                to_stack(true)
+                to_stack(True)
 
     def releasefile():
         nonlocal filepath
@@ -458,11 +454,11 @@ def quackery(source_string):
         try:
             os.remove(filename)
         except FileNotFoundError:
-            to_stack(false)
+            to_stack(False)
         except:
             raise
         else:
-            to_stack(true)
+            to_stack(True)
 
     def sharefile():
         nonlocal filepath
@@ -474,13 +470,13 @@ def quackery(source_string):
         try:
             with open(filename) as f: filetext = f.read()
         except FileNotFoundError:
-            to_stack(false)
+            to_stack(False)
         except:
             raise
         else:
             drop()
             string_to_stack(filetext)
-            to_stack(true)
+            to_stack(True)
 
     operators = {
            'python':      python,       # (     $ -->       )
