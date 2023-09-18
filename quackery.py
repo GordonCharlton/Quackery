@@ -340,7 +340,7 @@ def quackery(source_string):
         to_stack(b[:a])
         to_stack(b[a:])
 
-    def join():
+    def qjoin():
         expect_something()
         b = from_stack()
         if not isNest(b):
@@ -519,7 +519,7 @@ def quackery(source_string):
            'take':        take,         # (     [ --> x     )
            '[]':          create_nest,  # (       --> n     )
            'split':       qsplit,       # (   [ n --> [ [   )
-           'join':        join,         # (   x x --> [     )
+           'join':        qjoin,        # (   x x --> [     )
            'find':        qfind,        # (     x --> b     )
            'peek':        peek,         # (   [ n --> x     )
            'poke':        poke,         # ( x [ n -->       )
