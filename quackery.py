@@ -1118,7 +1118,8 @@ hex DEFACEABADFACADE initrandom
 
 [ time initrandom ]           is randomise    (         -->         )
 
-[ 64bitmask 1+
+[ 64bitmask min
+  64bitmask 1+
   over / over *
   [ prng 2dup > not while
     drop again ]
