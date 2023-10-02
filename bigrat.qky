@@ -20,7 +20,7 @@
       else
         [ 2swap nip
           rot over + ]
-      again ] nip swap  ]       is sqrt         (       n --> n n     )
+      again ] nip swap  ]       is sqrt+        (       n --> n n     )
 
   [ rot 2dup *
     dip [ rot * dip * + ]
@@ -60,7 +60,7 @@
       [ drop true ] done
     base share swap **
     tuck * dip * tuck *
-    sqrt 0 = dip
+    sqrt+ 0 = dip
       [ swap reduce ] ]         is vsqrt        (   n/d n --> n/d b   )
 
   [ stack 0 0 ]                 is v.cf         (         --> [       )
