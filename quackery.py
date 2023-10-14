@@ -602,11 +602,7 @@ def quackery(source_string):
     def one_char():
         nonlocal source
         source = source.lstrip()
-        if source:
-            ch = source[0]
-            source = source[1:]
-            return ch
-        return ''
+        return next_char()
 
     def get_name():
         name = next_word()
