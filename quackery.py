@@ -589,6 +589,7 @@ def quackery(source_string):
             return ''
 
     def next_word():
+        nonlocal source
         parts = source.lstrip().split(None, 1)
         if len(parts) == 2:
             source = parts[1]
@@ -599,6 +600,7 @@ def quackery(source_string):
         return ''
 
     def one_char():
+        nonlocal source
         source = source.lstrip()
         if source:
             ch = source[0]
