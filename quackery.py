@@ -72,7 +72,7 @@ def quackery(source_string):
         expect_nest()
         result = ''
         for ch in from_stack():
-            if ch == 13: # \r
+            if ch in (10,13): # \n \r
                 result += '\n'
             elif 31 < ch < 127:
                 result += chr(ch)
