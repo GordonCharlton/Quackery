@@ -589,25 +589,20 @@ def quackery(source_string):
             return ''
 
     def next_word():
-        result = ''
-        while True:
-            char = next_char()
-            if char == '':
-                return(result)
-            if ord(char) < 33:
-                if result == '':
-                    continue
-                return result
-            result += char
+        nonlocal source
+        parts = source.lstrip().split(None, 1)
+        if len(parts) == 2:
+            source = parts[1]
+            return parts[0]
+        elif len(parts) == 1:
+            source = ''
+            return parts[0]
+        return ''
 
     def one_char():
-        while True:
-            char = next_char()
-            if char == '':
-                return char
-            if ord(char) < 33:
-                continue
-            return char
+        nonlocal source
+        source = source.lstrip()
+        return next_char()
 
     def get_name():
         name = next_word()
