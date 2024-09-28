@@ -402,9 +402,11 @@ def quackery(source_string):
         expect_something()
         bool_to_stack(isOperator(from_stack()))
 
-    def quid():
+    def oats():
         expect_something()
-        to_stack(id(from_stack()))
+        a = from_stack()
+        expect_something()
+        to_stack(a is from_stack())
 
     def qemit():
         expect_number()
@@ -527,7 +529,7 @@ def quackery(source_string):
            'nest?':       qnest,        # (     x --> b     )
            'number?':     qnumber,      # (     x --> b     )
            'operator?':   qoperator,    # (     x --> b     )
-           'quid':        quid,         # (     x --> n     )
+           'oats':        oats,         # (     x --> n     )
            'emit':        qemit,        # (     c -->       )
            'ding':        ding,         # (       -->       )
            'input':       qinput,       # (     $ --> $     )
@@ -1180,8 +1182,6 @@ hex DEFACEABADFACADE initrandom
         [ history release ]
         false ] ]             is bailed       (         --> b       )
 
-[ quid swap quid = ]          is oats         (     x x --> b       )
-
 [ [] swap
   [ trim
     dup size while
@@ -1585,7 +1585,7 @@ $ "quackify replacefile takefile loadfile words empty wrap$ leave
    shell echostack echoreturn return$ echo unbuild nesting quackery
    build releasewords restorewords backupwords unresolved b.to-do
    b.nesting message jobtable jobs builder? builders buildernest
-   reflect named? actiontable actions name? names namenest nest$ oats
+   reflect named? actiontable actions name? names namenest nest$
    bailed bail backup history shuffle random randomise initrandom
    prng prng.d prng.c prng.b prng.a rot64 64bits 64bitmask $->n
    char->n sort$ $> $< qacsfot sort sortwith sort.test not-do do-now
@@ -1598,7 +1598,7 @@ $ "quackify replacefile takefile loadfile words empty wrap$ leave
    nested move tally replace release share stack while until recurse
    do this ' copy clamp max min else iff if done again 2drop 2dup
    within unrot tuck bit mod nip / - < xor != or and not true false
-   sharefile releasefile putfile filepath input ding emit quid
+   sharefile releasefile putfile filepath input ding emit oats
    operator? number? nest? size poke peek find join split [] take
    immovable put ]bailby[ ]do[ ]this[ ]'[ ]else[ ]iff[ ]if[ ]again[
    ]done[ over rot swap drop dup return nestdepth stacksize time ~ ^
@@ -1611,7 +1611,7 @@ nest$ namenest put
   shell echostack echoreturn return$ echo unbuild nesting quackery
   build releasewords restorewords backupwords unresolved b.to-do
   b.nesting message jobtable jobs builder? builders buildernest
-  reflect named? actiontable actions name? names namenest nest$ oats
+  reflect named? actiontable actions name? names namenest nest$
   bailed bail backup history shuffle random randomise initrandom
   prng prng.d prng.c prng.b prng.a rot64 64bits 64bitmask $->n
   char->n sort$ $> $< qacsfot sort sortwith sort.test not-do do-now
@@ -1624,7 +1624,7 @@ nest$ namenest put
   nested move tally replace release share stack while until recurse
   do this ' copy clamp max min else iff if done again 2drop 2dup
   within unrot tuck bit mod nip / - < xor != or and not true false
-  sharefile releasefile putfile filepath input ding emit quid
+  sharefile releasefile putfile filepath input ding emit oats
   operator? number? nest? size poke peek find join split [] take
   immovable put ]bailby[ ]do[ ]this[ ]'[ ]else[ ]iff[ ]if[ ]again[
   ]done[ over rot swap drop dup return nestdepth stacksize time ~ ^
