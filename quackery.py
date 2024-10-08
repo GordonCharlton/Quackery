@@ -899,12 +899,11 @@ protect temp
   ]this[ swap peek
   ]done[ ]                    is table        (       n --> x       )
 
-[ [] unrot
-  dup 1 < iff 2drop done
-  [ 2 /mod over while
-    if [ dip [ tuck join swap ] ]
-    dip [ dup join ]
-    again ] 2drop join ]      is of           (     x n --> [       )
+[ over size * swap
+  [ 2dup size > while
+    dup join
+    again ]
+  swap split drop ]           is of            (     x n --> [       )
 
 [ split 1 split
   swap dip join
