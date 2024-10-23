@@ -417,8 +417,10 @@ def quackery(source_string):
             sys.stdout.write(chr(char))
         else:
             sys.stdout.write('?')
+            
     def ding():
         sys.stdout.write('\a')
+        sys.stdout.flush()
 
     def qinput():
         prompt = string_from_stack()
