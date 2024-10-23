@@ -417,7 +417,7 @@ def quackery(source_string):
             sys.stdout.write(chr(char))
         else:
             sys.stdout.write('?')
-            
+
     def ding():
         sys.stdout.write('\a')
         sys.stdout.flush()
@@ -905,7 +905,7 @@ protect temp
   [ 2dup size > while
     dup join
     again ]
-  swap split drop ]           is of            (     x n --> [       )
+  swap split drop ]           is of           (     x n --> [       )
 
 [ split 1 split
   swap dip join
@@ -925,7 +925,7 @@ protect temp
         [ i^ temp replace
           conclude ]
       behead drop ]
-  2drop temp take ]            is findseq     (     [ [ --> n       )
+  2drop temp take ]           is findseq      (     [ [ --> n       )
 
 [ 13 ]                        is carriage     (         --> c       )
 
