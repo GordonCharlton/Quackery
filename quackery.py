@@ -558,11 +558,10 @@ def quackery(source_string):
             if program_counter >= len(current_nest):
                 if len(rstack) == 0:
                     break
-                else:
-                    program_counter = from_return()
-                    current_nest = from_return()
-                    program_counter += 1
-                    continue
+                program_counter = from_return()
+                current_nest = from_return()
+                program_counter += 1
+                continue
             current_item = current_nest[program_counter]
             if isNest(current_item):
                 to_return(current_nest)
