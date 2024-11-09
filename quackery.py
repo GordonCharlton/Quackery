@@ -417,6 +417,7 @@ def quackery(source_string):
             sys.stdout.write(chr(char))
         else:
             sys.stdout.write('?')
+        sys.stdout.flush()
 
     def ding():
         sys.stdout.write('\a')
