@@ -905,7 +905,7 @@ protect temp
   [ 2dup size > while
     dup join
     again ]
-  swap split drop ]           is of           (     x n --> [       )
+  swap split drop ]           is of            (     x n --> [       )
 
 [ split 1 split
   swap dip join
