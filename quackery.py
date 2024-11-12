@@ -417,7 +417,6 @@ def quackery(source_string):
             sys.stdout.write(chr(char))
         else:
             sys.stdout.write('?')
-        sys.stdout.flush()
 
     def ding():
         sys.stdout.write('\a')
@@ -905,7 +904,7 @@ protect temp
   [ 2dup size > while
     dup join
     again ]
-  swap split drop ]           is of            (     x n --> [       )
+  swap split drop ]           is of           (     x n --> [       )
 
 [ split 1 split
   swap dip join
@@ -1365,6 +1364,16 @@ protect b.nesting
       '  echo$ nested join
       nested join ] ]         is b.say        (     [ $ --> [ $     )
 
+[ dup $ '' = if
+    [ $ '"ask" needs to be followed by a string.'
+      message put
+      bail ]
+  $ '$' builders find jobs do
+  dip
+    [ -1 pluck
+      '  input nested join
+      nested join ] ]         is b.ask        (     [ $ --> [ $     )
+
 [ 16 base put
   nextword dup
   $ '' = if
@@ -1633,12 +1642,12 @@ nest$ namenest put
 
                         resolves actions      (       n --> x       )
 
-$ "constant now! hex say $ char resolves forward ) ( builds is ] ["
-nest$ buildernest put
+$ "constant now! hex say ask $ char 
+   resolves forward ) ( builds is ] [" nest$ buildernest put
 
 [ table
-  b.constant b.now! b.hex b.say b.$ b.char b.resolves
-  b.forward b.) b.( b.builds b.is b.] b.[ ]
+  b.constant b.now! b.hex b.say b.ask b.$ b.char
+  b.resolves b.forward b.) b.( b.builds b.is b.] b.[ ]
 
                         resolves jobs         (       n --> x       )
 
