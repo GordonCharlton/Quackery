@@ -1534,26 +1534,32 @@ protect b.nesting
       unpack ]
   cr ]                        is echostack    (         -->         )
 
-[ cr $ '' $ '/O> '
-  [ input
-    dup $ '' != while
-    carriage join join
-    $ '... ' again ]
-  drop
-  quackery
-  5 nesting put
-  cr echostack
-  nesting release again ]     is shell        (         -->         )
+[ stack ]                     is leaving      (         --> s       )
 
-[ cr randomise 12 random
+[ true leaving replace ]      is leave        (         -->         )
+
+[ [ false leaving put 
+    cr $ '' $ '/O> '
+    [ input
+      dup $ '' != while
+      carriage join join
+      $ '... ' again ]
+    drop
+    quackery
+    5 nesting put
+    cr echostack
+    nesting release 
+    leaving take until ] 
+  $ "You have left the shell. "
+  cr randomise 12 random
   [ table
     $ 'Goodbye.'  $ 'Adieu.' $ 'So long.'
     $ 'Cheerio.'  $ 'Aloha.' $ 'Ciao.'
     $ 'Farewell.' $ 'Be seeing you.'
     $ 'Sayonara.' $ 'Auf wiedersehen.'
     $ 'Toodles.'  $ 'Hasta la vista.' ]
-  do echo$ cr cr
-  3 ]bailby[ ]                is leave        (         -->         )
+  do join echo$
+  cr cr ]                     is shell        (         -->         )
 
 [ stacksize times drop ]      is empty        (     all -->         )
 
@@ -1591,16 +1597,16 @@ protect b.nesting
   decimal unbuild
   base release ]              is quackify     (       x --> $       )
 
-$ "quackify replacefile takefile loadfile words empty wrap$ leave
-   shell echostack echoreturn return$ echo unbuild nesting quackery
-   build releasewords restorewords backupwords unresolved b.to-do
-   b.nesting message jobtable jobs builder? builders buildernest
-   reflect named? actiontable actions name? names namenest nest$
-   bailed bail backup history shuffle random randomise initrandom
-   prng prng.d prng.c prng.b prng.a rot64 64bits 64bitmask $->n
-   char->n sort$ $> $< qacsfot sort sortwith sort.test not-do do-now
-   now-do add-to new-do to-do unpack pack reverse nextword trim
-   printable found findwith matchitem mi.result mi.tidyup echo$
+$ "quackify replacefile takefile loadfile words empty wrap$ shell
+   leave leaving echostack echoreturn return$ echo unbuild nesting
+   quackery build releasewords restorewords backupwords unresolved
+   b.to-do b.nesting message jobtable jobs builder? builders
+   buildernest reflect named? actiontable actions name? names
+   namenest nest$ bailed bail backup history shuffle random randomise
+   initrandom prng prng.d prng.c prng.b prng.a rot64 64bits 64bitmask
+   $->n char->n sort$ $> $< qacsfot sort sortwith sort.test not-do
+   do-now now-do add-to new-do to-do unpack pack reverse nextword
+   trim printable found findwith matchitem mi.result mi.tidyup echo$
    witheach makewith with.hold number$ decimal base digit lower upper
    sp space cr carriage findseq behead stuff pluck of table temp step
    refresh conclude i^ i times times.action times.count times.start
@@ -1617,16 +1623,16 @@ $ "quackify replacefile takefile loadfile words empty wrap$ leave
 nest$ namenest put
 
 [ table
-  quackify replacefile takefile loadfile words empty wrap$ leave
-  shell echostack echoreturn return$ echo unbuild nesting quackery
-  build releasewords restorewords backupwords unresolved b.to-do
-  b.nesting message jobtable jobs builder? builders buildernest
-  reflect named? actiontable actions name? names namenest nest$
-  bailed bail backup history shuffle random randomise initrandom
-  prng prng.d prng.c prng.b prng.a rot64 64bits 64bitmask $->n
-  char->n sort$ $> $< qacsfot sort sortwith sort.test not-do do-now
-  now-do add-to new-do to-do unpack pack reverse nextword trim
-  printable found findwith matchitem mi.result mi.tidyup echo$
+  quackify replacefile takefile loadfile words empty wrap$ shell
+  leave leaving echostack echoreturn return$ echo unbuild nesting
+  quackery build releasewords restorewords backupwords unresolved
+  b.to-do b.nesting message jobtable jobs builder? builders
+  buildernest reflect named? actiontable actions name? names
+  namenest nest$ bailed bail backup history shuffle random randomise
+  initrandom prng prng.d prng.c prng.b prng.a rot64 64bits 64bitmask
+  $->n char->n sort$ $> $< qacsfot sort sortwith sort.test not-do
+  do-now now-do add-to new-do to-do unpack pack reverse nextword
+  trim printable found findwith matchitem mi.result mi.tidyup echo$
   witheach makewith with.hold number$ decimal base digit lower upper
   sp space cr carriage findseq behead stuff pluck of table temp step
   refresh conclude i^ i times times.action times.count times.start
@@ -1697,7 +1703,7 @@ if __name__ == '__main__':
                 print('Python error: ' + str(diagnostics))
                 sys.exit(1)
     else:
-        print('\nWelcome to Quackery')
+        print('\nWelcome to Quackery.')
         print('\nEnter "leave" to leave the shell.')
         quackscript = r"""
 
