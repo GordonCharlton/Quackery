@@ -900,7 +900,10 @@ protect temp
   ]this[ swap peek
   ]done[ ]                    is table        (       n --> x       )
 
-[ over size * swap
+[ dip 
+    [ dup nest? not if
+        nested ]
+  over size * swap
   [ 2dup size > while
     dup join
     again ]
