@@ -113,7 +113,7 @@ def quackery(source_string):
 
     def qreturn():
         nonlocal rstack
-        to_stack(rstack)
+        to_stack(rstack + [])
 
     def dup():
         a = from_stack()
