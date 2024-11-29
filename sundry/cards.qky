@@ -108,7 +108,7 @@
     +highjoker ]                is euchrepack   (         --> [       )
 
   [ [] swap witheach join
-    swap join ]                 is gather       (     [ [ --> [       )
+    swap join ]                 is gatherup     (     [ [ --> [       )
 
   [ 2 players divvy undeal ]    is faro-out     (       [ --> [       )
 
@@ -120,10 +120,10 @@
         faro-in else faro-out ]
     nip ]                       is faro         (   [ n n --> [       )
 
-  [ players dealall gather ]    is piles        (     [ n --> [       )
+  [ players dealall gatherup ]  is piles        (     [ n --> [       )
 
   [ players dealall
-    shuffle gather ]            is mixpiles     (       [ --> [       )
+    shuffle gatherup ]          is mixpiles     (       [ --> [       )
 
   [ stack 5 ]                   is riffskill    (         --> [       )
 
