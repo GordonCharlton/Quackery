@@ -9,16 +9,18 @@ try:
 except:
     pass
 
-
 class QuackeryError(Exception):
     pass
-
 
 def quackery(source_string):
 
     """   Perform a Quackery program. Return the stack as a string.  """
 
     def failed(message):
+        to_return(current_nest)
+        to_return(program_counter)
+        to_return([])
+        to_return(0)
         traverse(build("""  stacksize pack
                             decimal unbuild
                             ' base size 2 > if
@@ -26,10 +28,12 @@ def quackery(source_string):
                             return$
                             nestdepth ]bailby[  """))
         returnstack = string_from_stack()
+        lines = returnstack.split('\n')
+        returnstack = '\n'.join(lines[:-3])
         thestack = string_from_stack()
         raise QuackeryError('\n       Problem: ' + message +
                             '\nQuackery Stack: ' + str(thestack)[2:-2] +
-                            '\n  Return stack: ' + str(returnstack))
+                            '\n  Return stack:\n' + str(returnstack))
 
     def isNest(item):
         return isinstance(item, list)
@@ -417,6 +421,7 @@ def quackery(source_string):
             sys.stdout.write(chr(char))
         else:
             sys.stdout.write('?')
+        sys.stdout.flush()
 
     def ding():
         sys.stdout.write('\a')
@@ -827,6 +832,9 @@ def quackery(source_string):
 
 [ dup take rot + swap put ]   is tally        (     n s -->         )
 
+[ dup take rot join
+  swap put ]                  is gather       (     x s -->         )
+
 [ swap take swap put ]        is move         (     s s -->         )
 
 [ [] tuck put ]               is nested       (       x --> [       )
@@ -900,7 +908,7 @@ protect temp
   ]this[ swap peek
   ]done[ ]                    is table        (       n --> x       )
 
-[ dip 
+[ dip
     [ dup nest? not if
         nested ]
   over size * swap
@@ -1502,35 +1510,77 @@ protect b.nesting
 
 [ unbuild echo$ ]             is echo         (       x -->         )
 
-[ $ ''
-  return -2 split drop
+[ number$
+  dup size 31 < if done
+  dup 5 split -5 split nip
+   $ "..." swap join join
+   $ " (" join
+   decimal
+   swap size number$ join
+   base release
+   $ " digits long)" join ]   is shorten      (       n --> $       )
+
+[ [] swap
   witheach
     [ dup number? iff
-      [ number$ join
-        $ '} ' join ]
-    else
-      [ $ '{' swap dip join
-        actiontable share
-        findwith
-          [ over oats ] drop
-        dup actiontable share
-        found iff
-          [ 1 - names swap
-            peek join
-            space join ]
-        else
-          [ drop $ '[...] '
-            join ] ] ]
-  -1 split drop ]             is return$      (         --> $       )
+        [ shorten nested join ]
+        done
+      dup named? iff
+        [ actiontable share
+          behead drop findwith 
+            [ over oats ] drop
+          names swap peek
+          nested join ]
+        done
+    drop
+    $ "[...]" nested join ] ] is shortnest    (       [ --> $       )
+
+  [ [] [] [] 
+    return -2 split drop
+    [ witheach
+      [ nested join swap ]
+    witheach
+      [ $ "[ " temp put
+        shortnest
+        dup witheach
+          [ space join
+            temp gather ]
+        $ "]" temp gather
+        $ "  " temp put
+        over i^ peek
+        swap witheach
+          [ over i^ = iff
+              [ char ^ conclude ]
+            else space
+            swap size of
+            space join
+            temp gather ]
+          drop
+          temp take -1 split drop
+          carriage join
+          temp take carriage join
+          swap join
+          rot swap join swap ]
+        drop ] ]              is return$      (         --> $       )
 
 [ return$ echo$ ]             is echoreturn   (         -->         )
 
 [ stacksize dup 0 = iff
-    [ $ 'Stack empty.' echo$ drop ]
-  else
-    [ $ 'Stack: ' echo$
-      pack dup
-      witheach [ echo sp ]
+    [ $ 'Stack empty.' echo$
+      drop cr ]
+    done
+  [ $ 'Stack:' echo$
+    pack dup witheach
+      [ sp
+        dup number? iff
+          [ shorten echo$ ]
+          done
+        dup named? iff
+          [ echo ] done
+        shortnest
+        $ " [ " echo$
+        witheach [ echo$ sp ]
+        $ "] " echo$ ]
       unpack ]
   cr ]                        is echostack    (         -->         )
 
@@ -1538,7 +1588,7 @@ protect b.nesting
 
 [ true leaving replace ]      is leave        (         -->         )
 
-[ [ false leaving put 
+[ [ false leaving put
     cr $ '' $ '/O> '
     [ input
       dup $ '' != while
@@ -1546,10 +1596,8 @@ protect b.nesting
       $ '... ' again ]
     drop
     quackery
-    5 nesting put
     cr echostack
-    nesting release 
-    leaving take until ] 
+    leaving take until ]
   $ "You have left the shell. "
   cr randomise 12 random
   [ table
@@ -1597,58 +1645,58 @@ protect b.nesting
   decimal unbuild
   base release ]              is quackify     (       x --> $       )
 
-$ "quackify replacefile takefile loadfile words empty wrap$ shell
-   leave leaving echostack echoreturn return$ echo unbuild nesting
-   quackery build releasewords restorewords backupwords unresolved
-   b.to-do b.nesting message jobtable jobs builder? builders
-   buildernest reflect named? actiontable actions name? names
-   namenest nest$ bailed bail backup history shuffle random randomise
-   initrandom prng prng.d prng.c prng.b prng.a rot64 64bits 64bitmask
-   $->n char->n sort$ $> $< qacsfot sort sortwith sort.test not-do
-   do-now now-do add-to new-do to-do unpack pack reverse nextword
-   trim printable found findwith matchitem mi.result mi.tidyup echo$
-   witheach makewith with.hold number$ decimal base digit lower upper
-   sp space cr carriage findseq behead stuff pluck of table temp step
-   refresh conclude i^ i times times.action times.count times.start
-   abs decurse depth 2over 2swap dip dip.hold protect protected
-   nested move tally replace release share stack while until recurse
-   do this ' copy clamp max min else iff if done again 2drop 2dup
-   within unrot tuck bit mod nip / - < xor != or and not true false
-   sharefile releasefile putfile filepath input ding emit oats
-   operator? number? nest? size poke peek find join split [] take
-   immovable put ]bailby[ ]do[ ]this[ ]'[ ]else[ ]iff[ ]if[ ]again[
-   ]done[ over rot swap drop dup return nestdepth stacksize time ~ ^
-   | & >> << ** /mod * negate + 1+ > = nand fail python"
+$ "quackify replacefile takefile loadfile words empty wrap$ shell leave
+   leaving echostack echoreturn return$ shortnest shorten echo unbuild
+   nesting quackery build releasewords restorewords backupwords
+   unresolved b.to-do b.nesting message jobtable jobs builder? builders
+   buildernest reflect named? actiontable actions name? names namenest
+   nest$ bailed bail backup history shuffle random randomise initrandom
+   prng prng.d prng.c prng.b prng.a rot64 64bits 64bitmask $->n char->n
+   sort$ $> $< qacsfot sort sortwith sort.test not-do do-now now-do
+   add-to new-do to-do unpack pack reverse nextword trim printable
+   found findwith matchitem mi.result mi.tidyup echo$ witheach makewith
+   with.hold number$ decimal base digit lower upper sp space cr
+   carriage findseq behead stuff pluck of table temp step refresh
+   conclude i^ i times times.action times.count times.start abs decurse
+   depth 2over 2swap dip dip.hold protect protected nested move tally
+   gather replace release share stack while until recurse do this '
+   copy clamp max min else iff if done again 2drop 2dup within unrot
+   tuck bit mod nip / - < xor != or and not true false sharefile
+   releasefile putfile filepath input ding emit oats operator? number?
+   nest? size poke peek find join split [] take immovable put ]bailby[
+   ]do[ ]this[ ]'[ ]else[ ]iff[ ]if[ ]again[ ]done[ over rot swap drop
+   dup return nestdepth stacksize time ~ ^ | & >> << ** /mod * negate +
+   1+ > = nand fail python"
 
 nest$ namenest put
 
 [ table
-  quackify replacefile takefile loadfile words empty wrap$ shell
-  leave leaving echostack echoreturn return$ echo unbuild nesting
-  quackery build releasewords restorewords backupwords unresolved
-  b.to-do b.nesting message jobtable jobs builder? builders
-  buildernest reflect named? actiontable actions name? names
-  namenest nest$ bailed bail backup history shuffle random randomise
-  initrandom prng prng.d prng.c prng.b prng.a rot64 64bits 64bitmask
-  $->n char->n sort$ $> $< qacsfot sort sortwith sort.test not-do
-  do-now now-do add-to new-do to-do unpack pack reverse nextword
-  trim printable found findwith matchitem mi.result mi.tidyup echo$
-  witheach makewith with.hold number$ decimal base digit lower upper
-  sp space cr carriage findseq behead stuff pluck of table temp step
-  refresh conclude i^ i times times.action times.count times.start
-  abs decurse depth 2over 2swap dip dip.hold protect protected
-  nested move tally replace release share stack while until recurse
-  do this ' copy clamp max min else iff if done again 2drop 2dup
-  within unrot tuck bit mod nip / - < xor != or and not true false
-  sharefile releasefile putfile filepath input ding emit oats
-  operator? number? nest? size poke peek find join split [] take
-  immovable put ]bailby[ ]do[ ]this[ ]'[ ]else[ ]iff[ ]if[ ]again[
-  ]done[ over rot swap drop dup return nestdepth stacksize time ~ ^
-  | & >> << ** /mod * negate + 1+ > = nand fail python ]
+  quackify replacefile takefile loadfile words empty wrap$ shell leave
+  leaving echostack echoreturn return$ shortnest shorten echo unbuild
+  nesting quackery build releasewords restorewords backupwords
+  unresolved b.to-do b.nesting message jobtable jobs builder? builders
+  buildernest reflect named? actiontable actions name? names namenest
+  nest$ bailed bail backup history shuffle random randomise initrandom
+  prng prng.d prng.c prng.b prng.a rot64 64bits 64bitmask $->n char->n
+  sort$ $> $< qacsfot sort sortwith sort.test not-do do-now now-do
+  add-to new-do to-do unpack pack reverse nextword trim printable
+  found findwith matchitem mi.result mi.tidyup echo$ witheach makewith
+  with.hold number$ decimal base digit lower upper sp space cr
+  carriage findseq behead stuff pluck of table temp step refresh
+  conclude i^ i times times.action times.count times.start abs decurse
+  depth 2over 2swap dip dip.hold protect protected nested move tally
+  gather replace release share stack while until recurse do this '
+  copy clamp max min else iff if done again 2drop 2dup within unrot
+  tuck bit mod nip / - < xor != or and not true false sharefile
+  releasefile putfile filepath input ding emit oats operator? number?
+  nest? size poke peek find join split [] take immovable put ]bailby[
+  ]do[ ]this[ ]'[ ]else[ ]iff[ ]if[ ]again[ ]done[ over rot swap drop
+  dup return nestdepth stacksize time ~ ^ | & >> << ** /mod * negate +
+  1+ > = nand fail python ]
 
                         resolves actions      (       n --> x       )
 
-$ "constant now! hex say ask $ char 
+$ "constant now! hex say ask $ char
    resolves forward ) ( builds is ] [" nest$ buildernest put
 
 [ table
@@ -1711,7 +1759,6 @@ if __name__ == '__main__':
           dip sharefile and iff
             [ cr say 'Building extensions.' cr quackery ]
           else drop
-
           shell """
 
         try:
