@@ -1076,7 +1076,9 @@ protect sort.test
 
 [ sortwith $> ]               is sort$        (       [ --> [       )
 
-[ upper 48 -
+[ dup 58 65 within iff
+    [ drop -1 ] done
+  upper 48 -
   dup 9 > if [ 7 - ]
   dup 0 base share
   within not if [ drop -1 ] ] is char->n      (       c --> n       )
