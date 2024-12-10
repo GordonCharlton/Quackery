@@ -1,12 +1,13 @@
 Quackery consists of the files and folders in the folder named
 quackery in which you find this file.
 
-In addition to this text file, you should find three pdf files, namely;
+In addition to this text file, you should find four pdf files, namely;
 
 The Book of Quackery.pdf             the Quackery manual
 The Book of Quackery for print.pdf   as above, but prints better
 Quackery-Book-Review.pdf             mostly for the benefit of people 
                                      visiting the GitHub repository
+Forging a Future in Silicon.pdf      The Quackery engine envisioned
 
 and four text files;
 
