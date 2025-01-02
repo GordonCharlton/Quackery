@@ -1400,7 +1400,17 @@ protect b.nesting
       bail ]
   base release ]              is b.hex        (     [ $ --> [ $     )
 
-[ dip [ -1 split ] swap do ]  is b.now!       (     [ $ --> [ $     )
+[ over [] = if
+    [ $ '"now!" needs something before it.'
+      message put bail ]
+  dip [ -1 pluck ] swap do ]  is b.now!       (     [ $ --> [ $     )
+
+[ over [] = if
+    [ $ '"maker" needs something before it.'
+      message put bail ]
+  dip 
+    [ -1 pluck do 
+      nested join ] ]         is b.maker      (     [ $ --> [ $     )
 
 [ over [] = if
     [ $ '"constant" needs something before it.'
@@ -1698,11 +1708,11 @@ nest$ namenest put
 
                         resolves actions      (       n --> x       )
 
-$ "constant now! hex say ask $ char
+$ "constant maker now! hex say ask $ char
    resolves forward ) ( builds is ] [" nest$ buildernest put
 
 [ table
-  b.constant b.now! b.hex b.say b.ask b.$ b.char
+  b.constant b.maker b.now! b.hex b.say b.ask b.$ b.char
   b.resolves b.forward b.) b.( b.builds b.is b.] b.[ ]
 
                         resolves jobs         (       n --> x       )
