@@ -159,26 +159,23 @@ def quackery(source_string):
             failed('Return stack unexpectedly empty.')
         return rstack.pop()
 
-    def bool_to_stack(qbool):
-        to_stack(True if qbool else False)
-
     def nand():
         expect_number()
         a = from_stack()
         expect_number()
-        bool_to_stack(from_stack() == False or a == False)
+        to_stack(from_stack() == False or a == False)
 
     def equal():
         expect_something()
         a = from_stack()
         expect_something()
-        bool_to_stack(a == from_stack())
+        to_stack(a == from_stack())
 
     def greater():
         expect_number()
         a = from_stack()
         expect_number()
-        bool_to_stack(from_stack() > a)
+        to_stack(from_stack() > a)
 
     def inc():
         expect_number()
@@ -396,15 +393,15 @@ def quackery(source_string):
 
     def qnest():
         expect_something()
-        bool_to_stack(isNest(from_stack()))
+        to_stack(isNest(from_stack()))
 
     def qnumber():
         expect_something()
-        bool_to_stack(isNumber(from_stack()))
+        to_stack(isNumber(from_stack()))
 
     def qoperator():
         expect_something()
-        bool_to_stack(isOperator(from_stack()))
+        to_stack(isOperator(from_stack()))
 
     def oats():
         expect_something()
